@@ -1,0 +1,13 @@
+Metadata-Version: 2.1
+Name: pupa
+Version: 0.1.0
+Requires-Dist: dishka
+Requires-Dist: aiogram
+Requires-Dist: aiogram_dialog
+Requires-Dist: sqlalchemy
+Requires-Dist: asyncpg
+Requires-Dist: taskiq
+Requires-Dist: taskiq-redis
+Requires-Dist: redis
+Requires-Dist: adaptix
+Requires-Dist: alembic

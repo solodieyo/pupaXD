@@ -1,0 +1,15 @@
+[project]
+name = "pupa"
+version = "0.1.0"
+dependencies = [
+    "dishka",
+    "aiogram",
+    "aiogram_dialog",
+    "sqlalchemy",
+    'asyncpg',
+    'taskiq',
+    'taskiq-redis',
+    'redis',
+    'adaptix',
+    'alembic'
+]

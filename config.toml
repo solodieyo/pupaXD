@@ -1,0 +1,13 @@
+[tg]
+token = '7685151745:AAEswltJ1CgGVkP3YApSGalNYa2VUZ2ktos'
+
+[redis]
+host = "127.0.0.1"
+port = 6379
+
+[postgres]
+database = "pupadb"
+user = "pugach"
+password = "qweqwe"
+host = "127.0.0.1"
+port = 5432

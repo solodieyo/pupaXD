@@ -1,0 +1,10 @@
+dishka
+aiogram
+aiogram_dialog
+sqlalchemy
+asyncpg
+taskiq
+taskiq-redis
+redis
+adaptix
+alembic
