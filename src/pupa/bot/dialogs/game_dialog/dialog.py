@@ -1,12 +1,11 @@
 from aiogram import F
 from aiogram_dialog import Window, StartMode
-from aiogram_dialog.widgets.kbd import Row, SwitchTo, Start, Button, Select, Group
+from aiogram_dialog.widgets.kbd import Row, SwitchTo, Start, Button, Group, Select
 from aiogram_dialog.widgets.media import StaticMedia, DynamicMedia
 from aiogram_dialog.widgets.text import Format, Const
 
 from pupa.bot.dialogs.common.getters import get_pupa_status
-from pupa.bot.dialogs.game_dialog.getters import journey_game_getter, getter_question_id
-from pupa.bot.dialogs.game_dialog.handlers import os_select_theme, on_question_click
+from pupa.bot.dialogs.game_dialog.handlers import on_learn_with_pupa, on_pupa_self_education, on_stop_self_education
 from pupa.bot.states.dialog_states import GameStates, MainMenuState
 
 game_main_menu = Window(
@@ -16,18 +15,16 @@ game_main_menu = Window(
 	StaticMedia(
 		path=Const('resources/media/images/test.png'),
 	),
-	Row(
-		SwitchTo(
-			text=Const('🏫 Пупа самоучка'),
-			id='self_education',
-			state=GameStates.pupa_self_education
-		),
+	Button(
+		text=Const('🏫 Пупа самоучка'),
+		id='self_education',
+		on_click=on_pupa_self_education
 	),
 	Row(
-		SwitchTo(
-			text=Const('🏡 Приключение'),
+		Button(
+			text=Const('🖌️ Приключение с пупой'),
 			id='care_start',
-			state=GameStates.pupa_journey_select_theme
+			on_click=on_pupa_journey
 		),
 		Start(
 			text=Const('😼 Как ты пупа?'),
@@ -39,7 +36,6 @@ game_main_menu = Window(
 	state=GameStates.game_menu,
 	getter=get_pupa_status
 )
-
 
 pupa_self_education = Window(
 	Format(
@@ -72,7 +68,6 @@ journey_select_theme = Window(
 	),
 	state=GameStates.pupa_journey_select_theme,
 )
-
 
 journey_game = Window(
 	Format(

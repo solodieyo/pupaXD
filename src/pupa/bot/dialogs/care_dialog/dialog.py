@@ -4,6 +4,7 @@ from aiogram_dialog.widgets.media import StaticMedia
 from aiogram_dialog.widgets.text import Format, Const
 from aiogram_dialog.widgets.media.dynamic import DynamicMedia
 
+from pupa.bot.dialogs.care_dialog.handlers import on_start_rest, on_stop_rest, on_eat
 from pupa.bot.dialogs.common.getters import get_pupa_status
 from pupa.bot.dialogs.common.widgets import BACK_TO_MAIN_MENU, BACK_TO_CARE_MENU
 from pupa.bot.states.dialog_states import CareStates
@@ -21,10 +22,10 @@ care_main_menu = Window(
 			id='care_start',
 			state=CareStates.food
 		),
-		SwitchTo(
+		Button(
 			text=Const('🛏️ Отдых'),
 			id='game_start',
-			state=CareStates.rest
+			on_click=on_start_rest
 		),
 		BACK_TO_MAIN_MENU
 	),

@@ -71,4 +71,3 @@ class QuestionRepository(BaseRepository):
 				)
 			)
 		await self.session.commit()
-

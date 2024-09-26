@@ -4,8 +4,7 @@ from aiogram_dialog import DialogManager
 from dishka import FromDishka
 from dishka.integrations.aiogram_dialog import inject
 
-from pupa.infrastructure.db.models import User
-from pupa.infrastructure.db.models.question import Question
+from pupa.infrastructure.db.models import User, Question
 from pupa.infrastructure.db.models.user_questions import UserQuestions
 from pupa.infrastructure.db.repositories import GeneralRepository
 
