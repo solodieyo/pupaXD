@@ -5,21 +5,16 @@ from pupa.infrastructure.db.repositories import BaseRepository
 
 
 class PupaRepository(BaseRepository):
-	async def create_user_pupa(
+	async def get_or_create_pupa(
 		self,
 		owner_id: int,
-	):
-		pupa = Pupa(owner_id=owner_id)
-
-		self.session.add(pupa)
-		await self.session.commit()
-
-	async def get_pupa_state(
-		self,
-		owner_id: int,
-	):
-		pupa = await self.session.scalars(
+	) -> Pupa:
+		pupa = await self.session.scalar(
 			select(Pupa).where(Pupa.owner_id == owner_id)
 		)
 
+		if pupa is None:
+			pupa = Pupa(owner_id=owner_id)
+			self.session.add(pupa)
+			await self.session.commit()
 		return pupa

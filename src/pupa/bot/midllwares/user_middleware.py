@@ -19,13 +19,17 @@ class UserMiddleware(BaseMiddleware):
 		data: dict[str, Any],
 	):
 		async with self.dishka() as req_dishka:
-			repo = await req_dishka.get(GeneralRepository)
+			repo: GeneralRepository = await req_dishka.get(GeneralRepository)
 
 			user = await repo.user.get_or_create_user(
 				tg_user_id=event.from_user.id,
 				username=event.from_user.username,
 				full_name=event.from_user.full_name
 			)
+			pupa = await repo.pupa.get_or_create_pupa(
+				owner_id=user.id
+			)
 
+			data['pupa'] = pupa
 			data['user'] = user
 			return await handler(event, data)

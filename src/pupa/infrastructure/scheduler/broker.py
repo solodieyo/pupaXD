@@ -1,3 +1,4 @@
+from dishka.integrations.taskiq import setup_dishka
 from taskiq import TaskiqScheduler, TaskiqEvents
 from taskiq_redis import ListQueueBroker, RedisAsyncResultBackend, RedisScheduleSource
 
@@ -16,4 +17,7 @@ scheduler = TaskiqScheduler(broker, [redis_source])
 
 @broker.on_event(TaskiqEvents.WORKER_STARTUP)
 async def startup_event(context):
-	pass
+	from pupa.factory.main_factory import get_config, get_dishka
+	config = get_config()
+	dishka = get_dishka(config)
+	setup_dishka(broker=broker, container=dishka)
