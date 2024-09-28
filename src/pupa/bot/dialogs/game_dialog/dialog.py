@@ -75,7 +75,7 @@ journey_select_theme = Window(
 		on_click=os_select_theme
 	),
 	SwitchTo(
-		text=Const('Я передумал..'),
+		text=Const('не хочу учиться'),
 		state=GameStates.game_menu,
 		id='__back__',
 	),

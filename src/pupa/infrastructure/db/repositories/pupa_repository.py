@@ -149,3 +149,18 @@ class PupaRepository(BaseRepository):
 			)
 		await self.session.commit()
 
+	async def set_schedule_food_id(self, pupa_id: int, schedule_id: int):
+		await self.session.execute(
+			update(Pupa).where(Pupa.id == pupa_id).values(
+				schedule_food_id=schedule_id
+			)
+		)
+		await self.session.commit()
+
+	async def delete_schedule_food_id(self, pupa_id: int):
+		await self.session.execute(
+			update(Pupa).where(Pupa.id == pupa_id).values(
+				schedule_food_id=None
+			)
+		)
+		await self.session.commit()

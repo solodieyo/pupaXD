@@ -74,12 +74,16 @@ async def on_eat(
 
 	await repository.pupa.set_state(pupa_id=pupa.id, state=PupaState.eat)
 	await repository.pupa.inscribe_hungry(pupa_id=pupa.id, value=30)
-	await bad_task.schedule_by_time(
+	if pupa.schedule_food_id:
+		await redis_source.delete_schedule(pupa.schedule_food_id)
+	schedule_bad: CreatedSchedule = await bad_task.schedule_by_time(
 		source=redis_source,
-		time=datetime.now(tz=timezone('Europe/Moscow')) + timedelta(minutes=1),
+		time=datetime.now(tz=timezone('Europe/Moscow')) + timedelta(minutes=10),
 		pupa_id=pupa.id,
 		chat_id=dialog_manager.event.from_user.id
 	)
+	pupa.schedule_food_id = schedule_bad.schedule_id
+	await repository.pupa.set_schedule_food_id(pupa_id=pupa.id, schedule_id=schedule_bad.schedule_id)
 	dialog_manager.dialog_data['food_media'] = True
 	await dialog_manager.show()
 	await sleep(3)

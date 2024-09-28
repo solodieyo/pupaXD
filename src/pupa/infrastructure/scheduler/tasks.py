@@ -59,10 +59,10 @@ async def bad_task(
 	bot: FromDishka[Bot],
 	repository: FromDishka[GeneralRepository],
 ):
-	gif = FSInputFile('resources/media/images/test.jpg')
-	await bot.send_photo(
+	gif = FSInputFile('resources/media/gifs/poop.gif')
+	await bot.send_document(
 		chat_id=chat_id,
-		photo=gif,
+		document=gif,
 		reply_markup=InlineKeyboardMarkup(
 			inline_keyboard=[
 				[InlineKeyboardButton(
@@ -72,3 +72,4 @@ async def bad_task(
 			]
 		))
 	await repository.pupa.set_poop_state(pupa_id=pupa_id, status=True)
+	await repository.pupa.delete_schedule_food_id(pupa_id=pupa_id)

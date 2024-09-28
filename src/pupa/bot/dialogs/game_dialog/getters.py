@@ -66,9 +66,9 @@ def get_final_data(
 ):
 	if win:
 		text = 'Поздравляю! Ты выиграл!, ты молодец!\n Правильных ответов: {count_correct_answers} из 10\n'
-		media = MediaAttachment(type=ContentType.PHOTO, path="resources/media/images/test.jpg")
+		media = MediaAttachment(type=ContentType.DOCUMENT, path="resources/media/gifs/win.gif")
 	else:
 
 		text = 'К сожалению, ты проиграл!\n Правильных ответов: {count_correct_answers} из 10\n'
-		media = MediaAttachment(type=ContentType.PHOTO, path="resources/media/images/test.jpg")
+		media = MediaAttachment(type=ContentType.DOCUMENT, path="resources/media/gifs/lose.gif")
 	return text, media

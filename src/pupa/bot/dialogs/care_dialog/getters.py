@@ -17,5 +17,6 @@ async def getter_care_menu(
 		path = f'resources/media/gifs/main_{randint(1, 3)}.gif'
 
 	return {
+		'food_media': food_media,
 		'media': MediaAttachment(type=ContentType.DOCUMENT, path=Path(path))
 	}

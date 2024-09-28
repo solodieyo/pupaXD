@@ -1,4 +1,5 @@
 from aiogram import F
+from aiogram.enums import ContentType
 from aiogram_dialog import Window, Dialog, StartMode
 from aiogram_dialog.widgets.kbd import Row, Button, Start
 from aiogram_dialog.widgets.media import StaticMedia
@@ -13,7 +14,7 @@ from pupa.bot.states.dialog_states import CareStates, MainMenuState
 care_main_menu = Window(
 	Format(
 		text='🍞{hungry}% | {hungry_state}\n🤗{mood}% | {mood_state}',
-		when=F['media'].is_not(True)
+		when=F['food_media'].is_not(True)
 	),
 	DynamicMedia(
 		selector='media',
@@ -23,20 +24,20 @@ care_main_menu = Window(
 		id='back_to_main',
 		state=MainMenuState.main_menu,
 		mode=StartMode.RESET_STACK,
-		when=F['media'].is_not(True)
+		when=F['food_media'].is_not(True)
 	),
 	Row(
 		Button(
 			text=Const('🍔 Еда'),
 			id='eating',
 			on_click=on_eat,
-			when=F['media'].is_not(True)
+			when=F['food_media'].is_not(True)
 		),
 		Button(
 			text=Const('🛏️ Отдых'),
 			id='chill',
 			on_click=on_start_rest,
-			when=F['media'].is_not(True)
+			when=F['food_media'].is_not(True)
 		),
 	),
 	state=CareStates.care_menu,
@@ -51,7 +52,8 @@ rest_window = Window(
 		text='🍞{hungry}% | {hungry_state}\n🤗{mood}% | {mood_state}'
 	),
 	StaticMedia(
-		path='resources/media/gifs/chill.gif'
+		path='resources/media/gifs/chill.gif',
+		type=ContentType.DOCUMENT
 	),
 	Button(
 		text=Const('Перестать отдыхать'),

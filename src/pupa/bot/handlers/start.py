@@ -10,9 +10,11 @@ from dishka import FromDishka
 from dishka.integrations.aiogram import inject
 from taskiq_redis import RedisScheduleSource
 
+from pupa.bot.enums.question_type import QuestionType
 from pupa.bot.states.dialog_states import MainMenuState
 from pupa.infrastructure.db.models import Pupa
-from pupa.infrastructure.scheduler.tasks import decrease_hungry, decrease_mood, test_task
+from pupa.infrastructure.db.repositories import GeneralRepository
+from pupa.infrastructure.scheduler.tasks import decrease_hungry, decrease_mood
 
 router = Router()
 
@@ -27,6 +29,7 @@ async def start_command(
 	pupa: Pupa,
 	redis_source: FromDishka[RedisScheduleSource]
 ):
+	await message.delete()
 	if new_user:
 		file = FSInputFile('resources/media/gifs/egg.gif')
 		answer_message = await message.answer_document(
@@ -48,7 +51,7 @@ async def start_command(
 	await dialog_manager.start(
 		state=MainMenuState.main_menu,
 		mode=StartMode.RESET_STACK,
-		show_mode=ShowMode.DELETE_AND_SEND
+		show_mode=ShowMode.EDIT
 	)
 
 
