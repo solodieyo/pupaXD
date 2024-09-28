@@ -1,0 +1,11 @@
+.vscode
+.ruff_cache
+.venv
+.idea
+*.iml
+*.egg-info
+config.toml
+__pycache__
+pyrightconfig.json
+.env
+.pytest_cache/
