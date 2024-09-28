@@ -1,15 +1,13 @@
 from aiogram import Bot
 from aiogram.types import FSInputFile, InlineKeyboardMarkup, InlineKeyboardButton
-from alembic.util import status
 from dishka import FromDishka
 from dishka.integrations.taskiq import inject
 
-from pupa.infrastructure.db.models import Pupa
 from pupa.infrastructure.db.repositories import GeneralRepository
 from pupa.infrastructure.scheduler.broker import broker
 
 
-@broker.task
+@broker.task(task_name='self_education_task')
 @inject
 async def self_education_task(
 	pupa_id: int,
@@ -23,27 +21,27 @@ async def self_education_task(
 	await repository.pupa.inscribe_education_time(pupa_id=pupa_id)
 
 
-@broker.task
+@broker.task(task_name='decrease_hungry')
 @inject
-async def decrease_pupa_hungry(
+async def decrease_hungry(
 	pupa_id: int,
 	bot: FromDishka[Bot],
 	repository: FromDishka[GeneralRepository],
 ):
-	await repository.pupa.decrease_hungry(pupa_id=pupa_id)
+	await repository.pupa.decrease_hungry_(pupa_id=pupa_id)
 
 
-@broker.task
+@broker.task(task_name='decrease_mood')
 @inject
-async def decrease_pupa_mood(
+async def decrease_mood(
 	pupa_id: int,
 	bot: FromDishka[Bot],
 	repository: FromDishka[GeneralRepository],
 ):
-	await repository.pupa.decrease_mood(pupa_id=pupa_id)
+	await repository.pupa.decrease_mood_(pupa_id=pupa_id)
 
 
-@broker.task
+@broker.task(task_name='rest_task')
 @inject
 async def rest_pupa(
 	pupa_id: int,
@@ -53,17 +51,18 @@ async def rest_pupa(
 	await repository.pupa.inscribe_mood(pupa_id=pupa_id)
 
 
-@broker.task
-async def poop_task(
+@broker.task(task_name='bad_task')
+@inject
+async def bad_task(
 	pupa_id: int,
 	chat_id: int,
 	bot: FromDishka[Bot],
 	repository: FromDishka[GeneralRepository],
 ):
-	gif = FSInputFile('')
-	await bot.send_document(
+	gif = FSInputFile('resources/media/images/test.jpg')
+	await bot.send_photo(
 		chat_id=chat_id,
-		document=gif,
+		photo=gif,
 		reply_markup=InlineKeyboardMarkup(
 			inline_keyboard=[
 				[InlineKeyboardButton(

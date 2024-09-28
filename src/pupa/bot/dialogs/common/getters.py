@@ -1,16 +1,16 @@
+from pathlib import Path
+from random import randint
+
+from aiogram.enums import ContentType
 from aiogram_dialog import DialogManager
-from dishka import FromDishka
-from dishka.integrations.aiogram_dialog import inject
+from aiogram_dialog.api.entities import MediaAttachment
 
-from pupa.bot.utils.checker_pupa_statuses import check_food_status, check_mood_status
+from pupa.bot.utils.checker_pupa_status import check_food_status, check_mood_status
 from pupa.infrastructure.db.models import Pupa
-from pupa.infrastructure.db.repositories import GeneralRepository
 
 
-@inject
 async def get_pupa_status(
 	dialog_manager: DialogManager,
-	repository: FromDishka[GeneralRepository],
 	pupa: Pupa,
 	**_
 ):
@@ -18,5 +18,20 @@ async def get_pupa_status(
 		'hungry': pupa.hungry,
 		"mood": pupa.mood,
 		"hungry_state": check_food_status(pupa.hungry),
-		'mood_state': check_mood_status(pupa.mood)
+		'mood_state': check_mood_status(pupa.mood),
+	}
+
+
+async def get_main_media(
+	dialog_manager: DialogManager,
+	**_
+):
+	media = MediaAttachment(
+		type=ContentType.DOCUMENT,
+		path=Path(
+			f'resources/media/gifs/main_{randint(1, 3)}.gif'
+		)
+	)
+	return {
+		"main_media": media
 	}

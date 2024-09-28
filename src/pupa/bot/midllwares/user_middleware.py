@@ -21,7 +21,7 @@ class UserMiddleware(BaseMiddleware):
 		async with self.dishka() as req_dishka:
 			repo: GeneralRepository = await req_dishka.get(GeneralRepository)
 
-			user = await repo.user.get_or_create_user(
+			user, new_user = await repo.user.get_or_create_user(
 				tg_user_id=event.from_user.id,
 				username=event.from_user.username,
 				full_name=event.from_user.full_name
@@ -32,4 +32,5 @@ class UserMiddleware(BaseMiddleware):
 
 			data['pupa'] = pupa
 			data['user'] = user
+			data['new_user'] = new_user
 			return await handler(event, data)

@@ -1,7 +1,7 @@
 import time
 
 from aiogram.types import CallbackQuery
-from aiogram_dialog import DialogManager, StartMode
+from aiogram_dialog import DialogManager, StartMode, ShowMode
 from aiogram_dialog.widgets.kbd import Button
 from dishka import FromDishka
 from dishka.integrations.aiogram_dialog import inject
@@ -24,7 +24,7 @@ async def on_learn_with_pupa(
 	repository: FromDishka[GeneralRepository],
 ):
 	pupa: Pupa = dialog_manager.middleware_data['pupa']
-	check = check_pupa_status(pupa=pupa, callback=callback)
+	check = await check_pupa_status(pupa=pupa, callback=callback)
 	if check:
 		await dialog_manager.switch_to(state=GameStates.learn_with_pupa)
 
@@ -38,7 +38,7 @@ async def on_pupa_self_education(
 	redis_source: FromDishka[RedisScheduleSource]
 ):
 	pupa: Pupa = dialog_manager.middleware_data['pupa']
-	check = check_pupa_status(pupa=pupa, callback=callback)
+	check = await check_pupa_status(pupa=pupa, callback=callback)
 	if check:
 		await repository.pupa.set_state(pupa_id=pupa.id, state=PupaState.education)
 		schedule_education: CreatedSchedule = await self_education_task.schedule_by_cron(
@@ -47,7 +47,7 @@ async def on_pupa_self_education(
 			pupa_id=pupa.id
 		)
 		dialog_manager.dialog_data['schedule_education_id'] = schedule_education.schedule_id
-		await dialog_manager.switch_to(state=GameStates.pupa_self_education)
+		await dialog_manager.switch_to(state=GameStates.pupa_self_education, show_mode=ShowMode.EDIT)
 
 
 @inject
@@ -111,7 +111,7 @@ async def on_question_click(
 	if time.time() - start_time > 10 + pupa.self_education_stat:
 		await callback.answer('Слишком долго(')
 
-	if selected_item == dialog_manager.dialog_data['answer']:
+	elif selected_item == dialog_manager.dialog_data['answer']:
 		dialog_manager.dialog_data['true_answers'] += 1
 		await repository.questions.user_correct_answer_question(
 			user_id=user.id,
@@ -119,6 +119,36 @@ async def on_question_click(
 			count_answers=dialog_manager.dialog_data.get('count_user_answers', 0)
 		)
 		await callback.answer('Верно!')
+	else:
+		await callback.answer('Неверно(')
 
 	if dialog_manager.dialog_data['count_answers'] == 10:
+		await _final_game(
+			dialog_manager=dialog_manager,
+			user_id=user.id,
+			pupa_id=pupa.id,
+			repository=repository
+		)
 		await dialog_manager.switch_to(GameStates.final_game)
+
+
+async def _final_game(
+	dialog_manager: DialogManager,
+	user_id: int,
+	pupa_id: int,
+	repository: GeneralRepository,
+):
+
+	if dialog_manager.dialog_data['true_answers'] >= 5:
+		dialog_manager.dialog_data['win'] = True
+
+		await repository.pupa.inscribe_mood(
+			pupa_id=pupa_id,
+			value=abs(-4 + dialog_manager.dialog_data['true_answers'])
+		)
+	else:
+		dialog_manager.dialog_data['win'] = False
+		await repository.pupa.decrease_mood_game(
+			pupa_id=pupa_id,
+			value=abs(5 - dialog_manager.dialog_data['true_answers'])
+		)

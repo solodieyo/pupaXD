@@ -1,4 +1,4 @@
-from sqlalchemy import ForeignKey
+from sqlalchemy import ForeignKey, INTEGER
 from sqlalchemy.orm import Mapped, mapped_column
 
 from pupa.bot.enums import PupaState

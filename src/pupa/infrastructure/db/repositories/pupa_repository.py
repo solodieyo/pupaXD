@@ -46,33 +46,49 @@ class PupaRepository(BaseRepository):
 		)
 		await self.session.commit()
 
-	async def decrease_hungry(self, pupa_id: int):
-		await self.session.execute(
-			update(Pupa).where(Pupa.id == pupa_id).values(
-				hungry=Pupa.hungry - Pupa.decrease_food_value
+	async def decrease_hungry_(self, pupa_id: int):
+		pupa: Pupa = await self.get_pupa_by_pupa_id(pupa_id=pupa_id)
+		if (pupa.hungry - pupa.decrease_food_value) >= 0:
+			await self.session.execute(
+				update(Pupa).where(Pupa.id == pupa_id).values(
+					hungry=Pupa.hungry - Pupa.decrease_food_value
+				)
 			)
-		)
+		else:
+			await self.session.execute(
+				update(Pupa).where(Pupa.id == pupa_id)
+				.values(hungry=0)
+			)
 		await self.session.commit()
 
-	async def decrease_mood(self, pupa_id: int):
-		poop_state = await self.session.execute(
-			select(Pupa.poop_state).where(Pupa.id == pupa_id)
-		)
-		minus_mood = 5 if poop_state.fetchone() else 0
-
-		await self.session.execute(
-			update(Pupa).where(Pupa.id == pupa_id).values(
-				mood=Pupa.mood - (Pupa.decrease_mood_value + minus_mood)
+	async def decrease_mood_(self, pupa_id: int):
+		pupa: Pupa = await self.get_pupa_by_pupa_id(pupa_id=pupa_id)
+		minus_mood = 5 if pupa.poop_state else 0
+		if (pupa.mood - (pupa.decrease_mood_value - minus_mood)) >= 0:
+			await self.session.execute(
+				update(Pupa).where(Pupa.id == pupa_id).values(
+					mood=Pupa.mood - (Pupa.decrease_mood_value + minus_mood)
+				)
 			)
-		)
+		else:
+			await self.session.execute(
+				update(Pupa).where(Pupa.id == pupa_id)
+				.values(mood=0)
+			)
 		await self.session.commit()
 
-	async def decrease_food(self, pupa_id: int):
-		await self.session.execute(
-			update(Pupa).where(Pupa.id == pupa_id).values(
-				food=Pupa.hungry - Pupa.decrease_food_value
+	async def decrease_mood_game(self, pupa_id: int, value: int = 1):
+		pupa: Pupa = await self.get_pupa_by_pupa_id(pupa_id=pupa_id)
+		if (pupa.mood - value) >= 0:
+			await self.session.execute(
+				update(Pupa).where(Pupa.id == pupa_id).values(
+					mood=Pupa.mood - value)
+				)
+		else:
+			await self.session.execute(
+				update(Pupa).where(Pupa.id == pupa_id)
+				.values(mood=0)
 			)
-		)
 		await self.session.commit()
 
 	async def set_poop_state(self, pupa_id: int, status: bool):
@@ -105,18 +121,31 @@ class PupaRepository(BaseRepository):
 		)
 		await self.session.commit()
 
-	async def inscribe_mood(self, pupa_id: int):
-		await self.session.execute(
-			update(Pupa).where(Pupa.id == pupa_id).values(
-				mood=Pupa.mood + 1
+	async def inscribe_mood(self, pupa_id: int, value: int = 1):
+		pupa: Pupa = await self.get_pupa_by_pupa_id(pupa_id=pupa_id)
+		if (pupa.mood + value) <= 100:
+			await self.session.execute(
+				update(Pupa).where(Pupa.id == pupa_id).values(
+					mood=Pupa.mood + value)
+				)
+		else:
+			await self.session.execute(
+				update(Pupa).where(Pupa.id == pupa_id)
+				.values(mood=100)
 			)
-		)
 		await self.session.commit()
 
 	async def inscribe_hungry(self, pupa_id: int, value: int):
-		await self.session.execute(
-			update(Pupa).where(Pupa.id == pupa_id).values(
-				hungry=Pupa.hungry + value
+		pupa: Pupa = await self.get_pupa_by_pupa_id(pupa_id=pupa_id)
+		if (pupa.hungry + value) <= 100:
+			await self.session.execute(
+				update(Pupa).where(Pupa.id == pupa_id).values(
+					hungry=Pupa.hungry + value)
 			)
-		)
+		else:
+			await self.session.execute(
+				update(Pupa).where(Pupa.id == pupa_id)
+				.values(hungry=100)
+			)
 		await self.session.commit()
+

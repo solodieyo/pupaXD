@@ -1,64 +1,57 @@
-from aiogram_dialog import Window
-from aiogram_dialog.widgets.kbd import Row, SwitchTo, Button
+from aiogram import F
+from aiogram_dialog import Window, Dialog, StartMode
+from aiogram_dialog.widgets.kbd import Row, Button, Start
 from aiogram_dialog.widgets.media import StaticMedia
 from aiogram_dialog.widgets.text import Format, Const
 from aiogram_dialog.widgets.media.dynamic import DynamicMedia
 
+from pupa.bot.dialogs.care_dialog.getters import getter_care_menu
 from pupa.bot.dialogs.care_dialog.handlers import on_start_rest, on_stop_rest, on_eat
 from pupa.bot.dialogs.common.getters import get_pupa_status
-from pupa.bot.dialogs.common.widgets import BACK_TO_MAIN_MENU, BACK_TO_CARE_MENU
-from pupa.bot.states.dialog_states import CareStates
+from pupa.bot.states.dialog_states import CareStates, MainMenuState
 
 care_main_menu = Window(
 	Format(
-		text='🍞 {hungry}% | {hungry_state}\n🤗{mood}% | {mood_state}'
+		text='🍞{hungry}% | {hungry_state}\n🤗{mood}% | {mood_state}',
+		when=F['media'].is_not(True)
 	),
-	StaticMedia(
-		path=Const('resources/media/images/test.png'),
+	DynamicMedia(
+		selector='media',
+	),
+	Start(
+		text=Const('😼 Как ты пупа?'),
+		id='back_to_main',
+		state=MainMenuState.main_menu,
+		mode=StartMode.RESET_STACK,
+		when=F['media'].is_not(True)
 	),
 	Row(
-		SwitchTo(
+		Button(
 			text=Const('🍔 Еда'),
-			id='care_start',
-			state=CareStates.food
+			id='eating',
+			on_click=on_eat,
+			when=F['media'].is_not(True)
 		),
 		Button(
 			text=Const('🛏️ Отдых'),
-			id='game_start',
-			on_click=on_start_rest
+			id='chill',
+			on_click=on_start_rest,
+			when=F['media'].is_not(True)
 		),
-		BACK_TO_MAIN_MENU
 	),
 	state=CareStates.care_menu,
-	getter=get_pupa_status
-)
-
-food_window = Window(
-	Format(
-		text='🍞 {hungry}% | {hungry_state}\n🤗{mood}% | {mood_state}'
-	),
-	DynamicMedia(
-		selector='food_media',
-	),
-	Button(
-		text=Const('Бургер'),
-		id='food_burger',
-		on_click=on_eat
-	),
-	BACK_TO_CARE_MENU,
-	state=CareStates.food,
 	getter=(
 		get_pupa_status,
-		getter_food_media
+		getter_care_menu
 	)
-)	
+)
 
 rest_window = Window(
 	Format(
-		text='🍞 {hungry}% | {hungry_state}\n🤗{mood}% | {mood_state}'
+		text='🍞{hungry}% | {hungry_state}\n🤗{mood}% | {mood_state}'
 	),
 	StaticMedia(
-		path=Const('')
+		path='resources/media/gifs/chill.gif'
 	),
 	Button(
 		text=Const('Перестать отдыхать'),
@@ -66,5 +59,12 @@ rest_window = Window(
 		on_click=on_stop_rest
 	),
 	state=CareStates.rest,
-	getter=get_pupa_status
+	getter=(
+		get_pupa_status,
+	)
+)
+
+care_dialog = Dialog(
+	care_main_menu,
+	rest_window
 )

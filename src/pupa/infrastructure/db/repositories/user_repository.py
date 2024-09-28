@@ -13,6 +13,7 @@ class UserRepository(BaseRepository):
 
 	):
 		user = await self.session.scalar(select(User).where(User.tg_user_id == tg_user_id))
+		new_user = False
 
 		if not user:
 			user = User(
@@ -21,6 +22,7 @@ class UserRepository(BaseRepository):
 				full_name=full_name
 			)
 			self.session.add(user)
+			new_user = True
 			await self.session.commit()
 
-		return user
+		return user, new_user

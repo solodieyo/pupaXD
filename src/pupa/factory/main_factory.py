@@ -8,7 +8,9 @@ from pupa.bot.dialogs import include_dialogs
 from pupa.bot.handlers import setup_routers
 from pupa.config import AppConfig, load_config
 from pupa.factory.setup_middlewares import _setup_outer_middlewares
-from pupa.infrastructure.di import BotProvider, DbProvider
+from pupa.infrastructure.di.bot import BotProvider
+from pupa.infrastructure.di.broker import RedisSourceProvider
+from pupa.infrastructure.di.db import DbProvider
 
 
 def create_dishka(config: AppConfig) -> AsyncContainer:
@@ -20,6 +22,7 @@ def get_providers():
 	return [
 		DpProvider(),
 		BotProvider(),
+		RedisSourceProvider(),
 		DbProvider(),
 	]
 
