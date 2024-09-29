@@ -1,4 +1,5 @@
 from aiogram import F
+from aiogram.enums import ContentType
 from aiogram_dialog import Window, StartMode, Dialog
 from aiogram_dialog.widgets.kbd import Row, SwitchTo, Start, Button, Group, Select
 from aiogram_dialog.widgets.media import StaticMedia, DynamicMedia
@@ -48,11 +49,9 @@ game_main_menu = Window(
 )
 
 pupa_self_education = Window(
-	Format(
-		text='🍞 {hungry}% | {hungry_state}\n🤗{mood}% | {mood_state}'
-	),
 	StaticMedia(
 		path=Const('resources/media/gifs/self_education.gif'),
+		type=ContentType.DOCUMENT
 	),
 	Button(
 		text=Const('Перестать учиться'),

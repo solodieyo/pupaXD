@@ -48,9 +48,6 @@ care_main_menu = Window(
 )
 
 rest_window = Window(
-	Format(
-		text='🍞{hungry}% | {hungry_state}\n🤗{mood}% | {mood_state}'
-	),
 	StaticMedia(
 		path='resources/media/gifs/chill.gif',
 		type=ContentType.DOCUMENT

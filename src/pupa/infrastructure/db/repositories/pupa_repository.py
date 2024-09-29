@@ -1,4 +1,4 @@
-
+from anyio.abc import value
 from sqlalchemy import select, update
 
 from pupa.bot.enums import PupaState
@@ -58,6 +58,20 @@ class PupaRepository(BaseRepository):
 			await self.session.execute(
 				update(Pupa).where(Pupa.id == pupa_id)
 				.values(hungry=0)
+			)
+		await self.session.commit()
+
+	async def decrease_mood_value(self, pupa_id: int, mood: int):
+		if (mood - 1) >= 0:
+			await self.session.execute(
+				update(Pupa).where(Pupa.id == pupa_id).values(
+					mood=Pupa.mood - 1
+				)
+			)
+		else:
+			await self.session.execute(
+				update(Pupa).where(Pupa.id == pupa_id)
+				.values(mood=0)
 			)
 		await self.session.commit()
 

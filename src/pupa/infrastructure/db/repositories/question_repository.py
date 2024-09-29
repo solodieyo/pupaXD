@@ -6,6 +6,7 @@ from pupa.bot.enums.question_type import QuestionType
 from pupa.infrastructure.db.models import Question
 from pupa.infrastructure.db.models.user_questions import UserQuestions
 from pupa.infrastructure.db.repositories import BaseRepository
+from pupa.infrastructure.dto_models.question import QuestionDTO
 
 INTERVALS = {
 	1: 1,
@@ -59,7 +60,18 @@ class QuestionRepository(BaseRepository):
 			.order_by(func.random())
 			.limit(1)
 		)
-		res = question.scalars().all()
+
+		res = question.scalars().all(),
+		options = await self.session.execute(
+			select(Question.answer)
+			.where(Question.answer != res[0][0].answer)
+			.limit(3)
+		)
+		new_question = QuestionDTO(
+			*question.scalars().all(),
+			options=options.fetchall()[0],
+
+		)
 		return res
 
 	async def user_correct_answer_question(self, question_id: int, user_id: int, count_answers: int):

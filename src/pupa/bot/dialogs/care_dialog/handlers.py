@@ -56,7 +56,7 @@ async def on_stop_rest(
 	await redis_source.delete_schedule(schedule_rest_id)
 	await repository.pupa.set_decrease_values(
 		pupa_id=pupa.id,
-		mood=2,
+		mood=0,
 		hungry=2
 	)
 	await dialog_manager.start(state=MainMenuState.main_menu, mode=StartMode.RESET_STACK)

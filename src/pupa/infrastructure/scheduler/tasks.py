@@ -3,6 +3,7 @@ from aiogram.types import FSInputFile, InlineKeyboardMarkup, InlineKeyboardButto
 from dishka import FromDishka
 from dishka.integrations.taskiq import inject
 
+from pupa.infrastructure.db.models import Pupa
 from pupa.infrastructure.db.repositories import GeneralRepository
 from pupa.infrastructure.scheduler.broker import broker
 
@@ -28,6 +29,9 @@ async def decrease_hungry(
 	bot: FromDishka[Bot],
 	repository: FromDishka[GeneralRepository],
 ):
+	pupa: Pupa = await repository.pupa.get_pupa_by_pupa_id(pupa_id=pupa_id)
+	if pupa.hungry < 30:
+		await repository.pupa.decrease_mood_value(pupa_id=pupa_id, mood=pupa.mood)
 	await repository.pupa.decrease_hungry_(pupa_id=pupa_id)
 
 

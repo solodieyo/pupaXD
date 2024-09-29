@@ -4,16 +4,23 @@ from random import randint
 from aiogram.enums import ContentType
 from aiogram_dialog import DialogManager
 from aiogram_dialog.api.entities import MediaAttachment
+from dishka import FromDishka
+from dishka.integrations.aiogram_dialog import inject
 
 from pupa.bot.utils.checker_pupa_status import check_food_status, check_mood_status
-from pupa.infrastructure.db.models import Pupa
+from pupa.infrastructure.db.models import Pupa, User
+from pupa.infrastructure.db.repositories import GeneralRepository
 
 
+@inject
 async def get_pupa_status(
 	dialog_manager: DialogManager,
-	pupa: Pupa,
+	user: User,
+	repository: FromDishka[GeneralRepository],
 	**_
 ):
+	pupa: Pupa = await repository.pupa.get_or_create_pupa(owner_id=user.id)
+
 	return {
 		'hungry': pupa.hungry,
 		"mood": pupa.mood,
