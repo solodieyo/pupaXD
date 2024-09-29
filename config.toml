@@ -1,5 +1,6 @@
 [tg]
 token = '7685151745:AAEswltJ1CgGVkP3YApSGalNYa2VUZ2ktos'
+admins_id = [5433727201, 1835906223]
 
 [redis]
 host = "127.0.0.1"

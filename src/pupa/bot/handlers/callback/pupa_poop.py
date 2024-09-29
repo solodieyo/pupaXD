@@ -18,6 +18,5 @@ async def remove_poop(
 ):
 	pupa_id = int(callback.data.split('_')[2])
 	await repository.pupa.set_poop_state(pupa_id=pupa_id, status=False)
-	await repository.pupa.inscribe_mood(pupa_id=pupa_id, value=10)
 	dialog_manager.show_mode = ShowMode.NO_UPDATE
 	await callback.message.delete()

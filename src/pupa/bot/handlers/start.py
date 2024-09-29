@@ -12,8 +12,10 @@ from taskiq_redis import RedisScheduleSource
 
 from pupa.bot.enums.question_type import QuestionType
 from pupa.bot.states.dialog_states import MainMenuState
-from pupa.infrastructure.db.models import Pupa
+from pupa.config import AppConfig
+from pupa.infrastructure.db.models import Pupa, User
 from pupa.infrastructure.db.repositories import GeneralRepository
+from pupa.infrastructure.dto_models.question import QuestionDTO
 from pupa.infrastructure.scheduler.tasks import decrease_hungry, decrease_mood
 
 router = Router()
@@ -27,14 +29,16 @@ async def start_command(
 	bot: Bot,
 	new_user: bool,
 	pupa: Pupa,
-	redis_source: FromDishka[RedisScheduleSource]
+	user: User,
+	redis_source: FromDishka[RedisScheduleSource],
+	repository: FromDishka[GeneralRepository]
 ):
 	await message.delete()
 	if new_user:
 		file = FSInputFile('resources/media/gifs/egg.gif')
 		answer_message = await message.answer_document(
 			document=file,
-			caption='Это яйцо из которого вылупляется пупа'
+			caption='Это яйцо из которого вылупляется Пупа'
 		)
 		await asyncio.sleep(5)
 		await answer_message.delete()
@@ -48,6 +52,7 @@ async def start_command(
 			cron='*/5 * * * *',
 			pupa_id=pupa.id
 		)
+
 	await dialog_manager.start(
 		state=MainMenuState.main_menu,
 		mode=StartMode.RESET_STACK,
@@ -55,16 +60,19 @@ async def start_command(
 	)
 
 
-# @router.message(F.photo)
-# @inject
-# async def on_photo(
-# 	message: Message,
-# 	repository: FromDishka[GeneralRepository]
-# ):
-# 	question = message.caption.split('|')
-# 	await repository.questions.add_question(
-# 		file_id=message.photo[-1].file_id,
-# 		true_answer=question[1],
-# 		options=question[0],
-# 		question_type=QuestionType.paints
-# 	)
+@router.message(F.photo)
+@inject
+async def on_photo(
+	message: Message,
+	repository: FromDishka[GeneralRepository],
+	config: FromDishka[AppConfig]
+):
+	if message.from_user.id in config.tg.admins_id:
+		await repository.questions.add_question(
+			file_id=message.photo[-1].file_id,
+			true_answer=message.caption,
+			question_type=QuestionType.paints
+		)
+		await message.answer('Вопрос добавлен')
+	else:
+		await message.delete()

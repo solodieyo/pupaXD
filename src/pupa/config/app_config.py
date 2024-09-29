@@ -10,7 +10,7 @@ CONFIG_PATH = r"config.toml"
 @dataclass
 class Tg:
 	token: str
-	# admin_id: int
+	admins_id: list[int]
 
 
 @dataclass

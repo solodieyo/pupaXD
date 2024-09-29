@@ -27,8 +27,8 @@ class QuestionRepository(BaseRepository):
 		self,
 		file_id: str,
 		true_answer: str,
-		options: str,
 		question_type: QuestionType,
+		options: str = None,
 	):
 		question = Question(
 			media=file_id,
@@ -61,18 +61,18 @@ class QuestionRepository(BaseRepository):
 			.limit(1)
 		)
 
-		res = question.scalars().all(),
-		options = await self.session.execute(
-			select(Question.answer)
-			.where(Question.answer != res[0][0].answer)
-			.limit(3)
-		)
-		new_question = QuestionDTO(
-			*question.scalars().all(),
-			options=options.fetchall()[0],
-
-		)
-		return res
+		res = question.scalars().all()
+		if res:
+			options = await self.session.execute(
+				select(func.distinct(Question.answer))
+				.where(Question.answer != res[0].answer)
+				.limit(3)
+			)
+			return QuestionDTO(
+				*res,
+				options=options.scalars().all(),
+			)
+		return None
 
 	async def user_correct_answer_question(self, question_id: int, user_id: int, count_answers: int):
 		if count_answers == 0:

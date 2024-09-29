@@ -27,14 +27,14 @@ game_main_menu = Window(
 		selector='main_media'
 	),
 	Start(
-		text=Const('😼 Как ты пупа?'),
+		text=Const('😼 Как ты Пупа?'),
 		id='back_to_main',
 		state=MainMenuState.main_menu,
 		mode=StartMode.RESET_STACK
 	),
 	Row(
 		SwitchTo(
-			text=Const('🖌️ Приключение с пупой'),
+			text=Const('🖌️ Приключение с Пупой'),
 			id='journey_start',
 			state=GameStates.pupa_journey_select_theme
 		),
@@ -74,7 +74,7 @@ journey_select_theme = Window(
 		on_click=os_select_theme
 	),
 	SwitchTo(
-		text=Const('не хочу учиться'),
+		text=Const('Не хочу учиться'),
 		state=GameStates.game_menu,
 		id='__back__',
 	),
