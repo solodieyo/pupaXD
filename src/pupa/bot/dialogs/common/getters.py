@@ -33,12 +33,21 @@ async def get_main_media(
 	dialog_manager: DialogManager,
 	**_
 ):
-	media = MediaAttachment(
-		type=ContentType.DOCUMENT,
-		path=Path(
-			f'resources/media/gifs/main_{randint(1, 3)}.gif'
+	if dialog_manager.dialog_data.get('no_mood', False):
+		media = MediaAttachment(
+			type=ContentType.DOCUMENT,
+			path=Path(
+				f'resources/media/gifs/no_mood_play.gif'
+			)
 		)
-	)
+		dialog_manager.dialog_data['no_mood'] = None
+	else:
+		media = MediaAttachment(
+			type=ContentType.DOCUMENT,
+			path=Path(
+				f'resources/media/gifs/main_{randint(1, 3)}.gif'
+			)
+		)
 	return {
 		"main_media": media
 	}

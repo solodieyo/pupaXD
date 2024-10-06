@@ -3,7 +3,7 @@ from aiogram.types import CallbackQuery
 from aiogram_dialog import DialogManager, ShowMode
 from dishka import FromDishka
 from dishka.integrations.aiogram import inject
-
+	
 from pupa.infrastructure.db.repositories import GeneralRepository
 
 router = Router()

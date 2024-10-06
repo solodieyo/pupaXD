@@ -26,11 +26,18 @@ async def self_education_task(
 @inject
 async def decrease_hungry(
 	pupa_id: int,
+	chat_id: int,
 	bot: FromDishka[Bot],
 	repository: FromDishka[GeneralRepository],
 ):
 	pupa: Pupa = await repository.pupa.get_pupa_by_pupa_id(pupa_id=pupa_id)
+	if pupa.sleep_state:
+		return
 	if pupa.hungry < 30:
+		await bot.send_message(
+			chat_id=chat_id,
+			text='Пупа хочет кушать!'
+		)
 		await repository.pupa.decrease_mood_value(pupa_id=pupa_id, mood=pupa.mood)
 	await repository.pupa.decrease_hungry_(pupa_id=pupa_id)
 
@@ -42,6 +49,9 @@ async def decrease_mood(
 	bot: FromDishka[Bot],
 	repository: FromDishka[GeneralRepository],
 ):
+	pupa: Pupa = await repository.pupa.get_pupa_by_pupa_id(pupa_id=pupa_id)
+	if pupa.sleep_state:
+		return
 	await repository.pupa.decrease_mood_(pupa_id=pupa_id)
 
 
@@ -77,3 +87,25 @@ async def bad_task(
 		))
 	await repository.pupa.set_poop_state(pupa_id=pupa_id, status=True)
 	await repository.pupa.delete_schedule_food_id(pupa_id=pupa_id)
+
+
+@broker.task(task_name='sleep_task')
+@inject
+async def sleep_pupa(
+	pupa_id: int,
+	chat_id: int,
+	bot: FromDishka[Bot],
+):
+	await bot.send_document(
+		chat_id=chat_id,
+		document=FSInputFile('resources/media/gifs/sleep.gif'),
+		caption='Пупа хочет спать!',
+		reply_markup=InlineKeyboardMarkup(
+			inline_keyboard=[
+				[InlineKeyboardButton(
+					text="Уложить спать",
+					callback_data=f"go_sleep_{pupa_id}"
+				)]
+			]
+		)
+	)

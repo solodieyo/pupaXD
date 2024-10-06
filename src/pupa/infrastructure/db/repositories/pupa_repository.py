@@ -97,7 +97,7 @@ class PupaRepository(BaseRepository):
 			await self.session.execute(
 				update(Pupa).where(Pupa.id == pupa_id).values(
 					mood=Pupa.mood - value)
-				)
+			)
 		else:
 			await self.session.execute(
 				update(Pupa).where(Pupa.id == pupa_id)
@@ -141,7 +141,7 @@ class PupaRepository(BaseRepository):
 			await self.session.execute(
 				update(Pupa).where(Pupa.id == pupa_id).values(
 					mood=Pupa.mood + value)
-				)
+			)
 		else:
 			await self.session.execute(
 				update(Pupa).where(Pupa.id == pupa_id)
@@ -175,6 +175,22 @@ class PupaRepository(BaseRepository):
 		await self.session.execute(
 			update(Pupa).where(Pupa.id == pupa_id).values(
 				schedule_food_id=None
+			)
+		)
+		await self.session.commit()
+
+	async def set_sleep_time(self, pupa_id: int, time: str):
+		await self.session.execute(
+			update(Pupa).where(Pupa.id == pupa_id).values(
+				sleep_time=time
+			)
+		)
+		await self.session.commit()
+
+	async def set_sleep_state(self, pupa_id: int, status: bool):
+		await self.session.execute(
+			update(Pupa).where(Pupa.id == pupa_id).values(
+				sleep_state=status
 			)
 		)
 		await self.session.commit()

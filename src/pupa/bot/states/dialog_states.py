@@ -3,6 +3,8 @@ from aiogram.fsm.state import StatesGroup, State
 
 class MainMenuState(StatesGroup):
 	main_menu = State()
+	time_menu = State()
+	sleep = State()
 
 
 class CareStates(StatesGroup):

@@ -1,6 +1,7 @@
 from aiogram import F
 from aiogram.enums import ContentType
 from aiogram_dialog import Window, Dialog, StartMode
+from aiogram_dialog.widgets.input import MessageInput
 from aiogram_dialog.widgets.kbd import Row, Button, Start
 from aiogram_dialog.widgets.media import StaticMedia
 from aiogram_dialog.widgets.text import Format, Const
@@ -9,6 +10,7 @@ from aiogram_dialog.widgets.media.dynamic import DynamicMedia
 from pupa.bot.dialogs.care_dialog.getters import getter_care_menu
 from pupa.bot.dialogs.care_dialog.handlers import on_start_rest, on_stop_rest, on_eat
 from pupa.bot.dialogs.common.getters import get_pupa_status
+from pupa.bot.dialogs.common.handlers import ignore
 from pupa.bot.states.dialog_states import CareStates, MainMenuState
 
 care_main_menu = Window(
@@ -40,6 +42,9 @@ care_main_menu = Window(
 			when=F['food_media'].is_not(True)
 		),
 	),
+	MessageInput(
+		func=ignore,
+	),
 	state=CareStates.care_menu,
 	getter=(
 		get_pupa_status,
@@ -53,9 +58,12 @@ rest_window = Window(
 		type=ContentType.DOCUMENT
 	),
 	Button(
-		text=Const('Перестать отдыхать'),
+		text=Const('Как ты Пупа?'),
 		id='rest_pause',
 		on_click=on_stop_rest
+	),
+	MessageInput(
+		func=ignore,
 	),
 	state=CareStates.rest,
 	getter=(

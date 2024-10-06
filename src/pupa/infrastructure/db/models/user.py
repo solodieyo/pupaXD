@@ -11,3 +11,4 @@ class User(Base):
 	username: Mapped[str]
 	full_name: Mapped[str]
 
+

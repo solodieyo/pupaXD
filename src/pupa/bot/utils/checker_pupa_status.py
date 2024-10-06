@@ -10,7 +10,7 @@ def check_food_status(food: int) -> str:
 	}
 
 	for (upper, lower), message in statuses.items():
-		if lower < food <= upper:
+		if lower <= food <= upper:
 			return message
 
 
@@ -24,5 +24,5 @@ def check_mood_status(mood: int) -> str:
 	}
 
 	for (upper, lower), message in statuses.items():
-		if lower < mood <= upper:
+		if lower <= mood <= upper:
 			return message

@@ -45,7 +45,8 @@ async def start_command(
 		await decrease_hungry.schedule_by_cron(
 			source=redis_source,
 			cron='*/5 * * * *',
-			pupa_id=pupa.id
+			pupa_id=pupa.id,
+			chat_id=message.from_user.id
 		)
 		await decrease_mood.schedule_by_cron(
 			source=redis_source,
