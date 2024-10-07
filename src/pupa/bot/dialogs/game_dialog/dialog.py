@@ -71,7 +71,7 @@ journey_select_theme = Window(
 		selector='main_media'
 	),
 	Button(
-		text=Const('Картины'),
+		text=Format('Картины ({user_count}/{total_count}) {smile}'),
 		id='pictures',
 		on_click=os_select_theme
 	),
@@ -85,7 +85,10 @@ journey_select_theme = Window(
 		func=ignore,
 	),
 	state=GameStates.pupa_journey_select_theme,
-	getter=get_main_media
+	getter=(
+		get_main_media,
+		get_user_statistics
+	)
 )
 
 journey_game = Window(

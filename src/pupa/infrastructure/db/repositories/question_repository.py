@@ -74,13 +74,20 @@ class QuestionRepository(BaseRepository):
 			)
 		return None
 
-	async def user_correct_answer_question(self, question_id: int, user_id: int, count_answers: int):
+	async def user_correct_answer_question(
+		self,
+		question_id: int,
+		user_id: int,
+		count_answers: int,
+		question_type: QuestionType = None,
+	):
 		if count_answers == 0:
 			user_question = UserQuestions(
 				question_id=question_id,
 				user_id=user_id,
 				count_answers=count_answers,
-				interval_date=datetime.now() + timedelta(days=1)
+				interval_date=datetime.now() + timedelta(days=1),
+				question_type=question_type
 			)
 			self.session.add(user_question)
 		else:

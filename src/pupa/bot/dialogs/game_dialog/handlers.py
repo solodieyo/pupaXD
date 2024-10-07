@@ -108,7 +108,7 @@ async def on_question_click(
 	dialog_manager.dialog_data['count_answers'] += 1
 	start_time = dialog_manager.dialog_data['start_time']
 
-	if time.time() - start_time > 10 + pupa.self_education_stat:
+	if time.time() - start_time > 2:
 		await callback.answer('Слишком долго(')
 
 	elif selected_item == dialog_manager.dialog_data['answer']:
@@ -116,7 +116,8 @@ async def on_question_click(
 		await repository.questions.user_correct_answer_question(
 			user_id=user.id,
 			question_id=dialog_manager.dialog_data['question_id'],
-			count_answers=dialog_manager.dialog_data.get('count_user_answers', 0)
+			count_answers=dialog_manager.dialog_data.get('count_user_answers', 0),
+			question_type=QuestionType.paints
 		)
 		await callback.answer('Верно!')
 	else:

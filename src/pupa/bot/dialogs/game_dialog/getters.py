@@ -72,3 +72,18 @@ def get_final_data(
 		text = f'К сожалению, Ты проиграл!\n Правильных ответов: {count_correct_answers} из 10\n'
 		media = MediaAttachment(type=ContentType.DOCUMENT, path="resources/media/gifs/lose.gif")
 	return text, media
+
+
+@inject
+async def get_user_statistics(
+	dialog_manager: DialogManager,
+	repository: FromDishka[GeneralRepository],
+	user: User,
+	**_
+):
+	user_count, total_count = await repository.stats.get_paints_user_stat(user_id=user.id)
+	return {
+		'user_count': user_count,
+		'total_count': total_count,
+		'smile': '' if user_count != total_count else '🏆'
+	}
