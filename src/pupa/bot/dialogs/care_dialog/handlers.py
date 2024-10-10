@@ -1,7 +1,8 @@
 from asyncio import sleep
 from datetime import datetime, timedelta
 
-from aiogram.types import CallbackQuery
+from aiogram import Bot
+from aiogram.types import CallbackQuery, FSInputFile
 from aiogram_dialog import DialogManager, StartMode, ShowMode
 from aiogram_dialog.widgets.kbd import Button
 from dishka import FromDishka
@@ -22,6 +23,7 @@ async def on_start_rest(
 	callback: CallbackQuery,
 	widget: Button,
 	dialog_manager: DialogManager,
+	bot: FromDishka[Bot],
 	repository: FromDishka[GeneralRepository],
 	redis_source: FromDishka[RedisScheduleSource]
 ):
@@ -37,7 +39,13 @@ async def on_start_rest(
 		cron='*/2 * * * *',
 		pupa_id=pupa.id
 	)
+	audio_message = await bot.send_audio(
+		audio=FSInputFile('resources/media/audio/chil.mp3'),
+		chat_id=callback.from_user.id
+	)
 	dialog_manager.dialog_data['schedule_rest_id'] = schedule_rest.schedule_id
+	dialog_manager.dialog_data['audio_message_id'] = audio_message.message_id
+
 	await dialog_manager.switch_to(state=CareStates.rest)
 
 
@@ -46,6 +54,7 @@ async def on_stop_rest(
 	callback: CallbackQuery,
 	widget: Button,
 	dialog_manager: DialogManager,
+	bot: FromDishka[Bot],
 	repository: FromDishka[GeneralRepository],
 	redis_source: FromDishka[RedisScheduleSource]
 ):
@@ -59,6 +68,7 @@ async def on_stop_rest(
 		mood=0,
 		hungry=2
 	)
+	await bot.delete_message(chat_id=callback.from_user.id, message_id=dialog_manager.dialog_data['audio_message_id'])
 	await dialog_manager.start(state=MainMenuState.main_menu, mode=StartMode.RESET_STACK)
 
 

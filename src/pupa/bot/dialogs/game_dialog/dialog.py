@@ -11,11 +11,9 @@ from pupa.bot.dialogs.common.handlers import ignore
 from pupa.bot.dialogs.game_dialog.getters import (
 	journey_game_getter,
 	getter_question_id,
-	getter_final_menu
+	getter_final_menu, get_user_statistics
 )
 from pupa.bot.dialogs.game_dialog.handlers import (
-	on_pupa_self_education,
-	on_stop_self_education,
 	on_question_click,
 	os_select_theme
 )

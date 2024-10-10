@@ -1,9 +1,10 @@
-from datetime import time
+from datetime import time, datetime, timedelta
 
 from aiogram.types import CallbackQuery, Message
 from aiogram_dialog import DialogManager, ShowMode, StartMode
 from dishka import FromDishka
 from dishka.integrations.aiogram_dialog import inject
+from taskiq.scheduler.scheduled_task import CronSpec
 from taskiq_redis import RedisScheduleSource
 
 from pupa.bot.states.dialog_states import MainMenuState, GameStates
@@ -52,11 +53,14 @@ async def input_sleep_time(
 
 	parsed_time: time = parse_user_time(time_string=message.text)
 	if parsed_time:
-		await repository.pupa.set_sleep_time(pupa_id=pupa.id, time=parsed_time)
+		await repository.pupa.set_sleep_time(pupa_id=pupa.id, time=f"{parsed_time.hour}:{parsed_time.minute}")
 		await sleep_pupa.schedule_by_cron(
 			source=redis_source,
-			cron=f'{parsed_time.min} {parsed_time.hour} * * * *',
+			cron=CronSpec(hours=parsed_time.hour, minutes=parsed_time.minute, offset='Europe/Moscow'),
+			pupa_id=pupa.id,
+			chat_id=message.from_user.id
 		)
+		await message.delete()
 		await dialog_manager.start(
 			state=MainMenuState.main_menu,
 			show_mode=ShowMode.EDIT,

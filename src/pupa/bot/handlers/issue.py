@@ -2,6 +2,7 @@ from aiogram import Router, Bot
 from aiogram.filters import Command, CommandObject
 from aiogram.types import Message
 from dishka import FromDishka
+from dishka.integrations.aiogram import inject
 
 from pupa.config import AppConfig
 
@@ -9,6 +10,7 @@ router = Router()
 
 
 @router.message(Command('issue'))
+@inject
 async def issue_command(
 	message: Message,
 	command: CommandObject,

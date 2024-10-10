@@ -54,11 +54,17 @@ async def start_command(
 			pupa_id=pupa.id
 		)
 
-	await dialog_manager.start(
-		state=MainMenuState.main_menu,
-		mode=StartMode.RESET_STACK,
-		show_mode=ShowMode.EDIT
-	)
+		await dialog_manager.start(
+			state=MainMenuState.time_menu,
+			mode=StartMode.RESET_STACK,
+			show_mode=ShowMode.EDIT
+		)
+	else:
+		await dialog_manager.start(
+			state=MainMenuState.main_menu,
+			mode=StartMode.RESET_STACK,
+			show_mode=ShowMode.EDIT
+		)
 
 
 @router.message(F.photo)

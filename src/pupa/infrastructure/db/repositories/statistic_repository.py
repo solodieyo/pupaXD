@@ -10,11 +10,11 @@ class StatisticRepository(BaseRepository):
 	async def get_paints_user_stat(self, user_id: int):
 		total = await self.session.scalar(
 			select(func.count(Question.id))
-			.where(Question.id == QuestionType.paints)
+			.where(Question.question_type == QuestionType.paints)
 		)
 
 		user_total = await self.session.scalar(
-			select(func.count(Question.id))
+			select(func.count(UserQuestions.id))
 			.where(
 				UserQuestions.question_type == QuestionType.paints,
 				UserQuestions.user_id == user_id
