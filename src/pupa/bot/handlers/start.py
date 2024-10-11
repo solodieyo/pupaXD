@@ -33,6 +33,7 @@ async def start_command(
 	redis_source: FromDishka[RedisScheduleSource],
 	repository: FromDishka[GeneralRepository]
 ):
+	print(1)
 	await message.delete()
 	if new_user:
 		file = FSInputFile('resources/media/gifs/egg.gif')
@@ -63,7 +64,7 @@ async def start_command(
 		await dialog_manager.start(
 			state=MainMenuState.main_menu,
 			mode=StartMode.RESET_STACK,
-			show_mode=ShowMode.EDIT
+			show_mode=ShowMode.DELETE_AND_SEND
 		)
 
 
@@ -75,11 +76,14 @@ async def on_photo(
 	config: FromDishka[AppConfig]
 ):
 	if message.from_user.id in config.tg.admins_id:
-		await repository.questions.add_question(
-			file_id=message.photo[-1].file_id,
-			true_answer=message.caption,
-			question_type=QuestionType.paints
-		)
-		await message.answer('Вопрос добавлен')
+		if len(message.caption) < 21:
+			await repository.questions.add_question(
+				file_id=message.photo[-1].file_id,
+				true_answer=message.caption,
+				question_type=QuestionType.paints
+			)
+			await message.answer('Вопрос добавлен')
+		else:
+			await message.answer('Слишком длинный вопрос')
 	else:
 		await message.delete()
