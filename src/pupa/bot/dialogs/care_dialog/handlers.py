@@ -66,7 +66,7 @@ async def on_stop_rest(
 	await repository.pupa.set_decrease_values(
 		pupa_id=pupa.id,
 		mood=0,
-		hungry=2
+		hungry=1
 	)
 	await bot.delete_message(chat_id=callback.from_user.id, message_id=dialog_manager.dialog_data['audio_message_id'])
 	await dialog_manager.start(state=MainMenuState.main_menu, mode=StartMode.RESET_STACK)

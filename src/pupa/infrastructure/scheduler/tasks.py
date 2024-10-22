@@ -33,7 +33,7 @@ async def decrease_hungry(
 	pupa: Pupa = await repository.pupa.get_pupa_by_pupa_id(pupa_id=pupa_id)
 	if pupa.sleep_state:
 		return
-	if pupa.hungry < 30:
+	if pupa.hungry == 30:
 		await bot.send_message(
 			chat_id=chat_id,
 			text='Пупа хочет кушать!',
