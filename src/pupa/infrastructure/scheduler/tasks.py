@@ -36,7 +36,15 @@ async def decrease_hungry(
 	if pupa.hungry < 30:
 		await bot.send_message(
 			chat_id=chat_id,
-			text='Пупа хочет кушать!'
+			text='Пупа хочет кушать!',
+			reply_markup=InlineKeyboardMarkup(
+				inline_keyboard=[
+					[InlineKeyboardButton(
+						text='Хочу кушать',
+						callback_data=f'eat_pupa'
+					)]
+				]
+			)
 		)
 		await repository.pupa.decrease_mood_value(pupa_id=pupa_id, mood=pupa.mood)
 	await repository.pupa.decrease_hungry_(pupa_id=pupa_id)

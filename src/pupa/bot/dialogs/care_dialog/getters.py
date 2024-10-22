@@ -11,7 +11,7 @@ async def getter_care_menu(
 	**_
 ):
 	food_media = dialog_manager.dialog_data.get('food_media')
-	if food_media:
+	if food_media or dialog_manager.start_data:
 		path = 'resources/media/gifs/food.gif'
 	else:
 		path = f'resources/media/gifs/main_{randint(1, 3)}.gif'

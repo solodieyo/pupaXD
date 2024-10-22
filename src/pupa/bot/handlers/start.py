@@ -33,7 +33,6 @@ async def start_command(
 	redis_source: FromDishka[RedisScheduleSource],
 	repository: FromDishka[GeneralRepository]
 ):
-	print(1)
 	await message.delete()
 	if new_user:
 		file = FSInputFile('resources/media/gifs/egg.gif')

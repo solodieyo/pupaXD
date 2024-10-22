@@ -72,7 +72,30 @@ class QuestionRepository(BaseRepository):
 				*res,
 				options=options.scalars().all(),
 			)
-		return None
+		else:
+			question = await self.session.execute(
+				select(Question, UserQuestions)
+				.outerjoin(
+					UserQuestions,
+					and_(
+						UserQuestions.question_id == Question.id,
+						UserQuestions.user_id == user_id,
+					),
+				).order_by(func.random())
+				.where(
+					Question.question_type == question_type
+				)
+			)
+			res = question.scalars().all()
+			options = await self.session.execute(
+				select(func.distinct(Question.answer))
+				.where(Question.answer != res[0].answer)
+				.limit(3)
+			)
+			return QuestionDTO(
+				*res,
+				options=options.scalars().all(),
+			)
 
 	async def user_correct_answer_question(
 		self,
@@ -91,16 +114,26 @@ class QuestionRepository(BaseRepository):
 			)
 			self.session.add(user_question)
 		else:
-			await self.session.execute(
-				update(UserQuestions)
-				.where(
-					and_(
-						UserQuestions.question_id == Question.id,
-						UserQuestions.user_id == user_id,
+			question = await self.session.scalar(select(
+				UserQuestions
+			).where(
+				and_(
+					UserQuestions.question_id == question_id,
+					UserQuestions.user_id == user_id,
+				)))
+			if question.interval_date < datetime.now():
+				return
+			else:
+				await self.session.execute(
+					update(UserQuestions)
+					.where(
+						and_(
+							UserQuestions.question_id == Question.id,
+							UserQuestions.user_id == user_id,
+						)
+					).values(
+						count_answers=count_answers,
+						interval_date=datetime.now() + timedelta(days=INTERVALS[count_answers])
 					)
-				).values(
-					count_answers=count_answers,
-					interval_date=datetime.now() + timedelta(days=INTERVALS[count_answers])
 				)
-			)
 		await self.session.commit()

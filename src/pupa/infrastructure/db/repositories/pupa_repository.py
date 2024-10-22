@@ -80,7 +80,7 @@ class PupaRepository(BaseRepository):
 	async def decrease_mood_(self, pupa_id: int):
 		pupa: Pupa = await self.get_pupa_by_pupa_id(pupa_id=pupa_id)
 		minus_mood = 5 if pupa.poop_state else 0
-		if (pupa.mood - (pupa.decrease_mood_value - minus_mood)) >= 0:
+		if (pupa.mood - (pupa.decrease_mood_value + minus_mood)) >= 0:
 			await self.session.execute(
 				update(Pupa).where(Pupa.id == pupa_id).values(
 					mood=Pupa.mood - (Pupa.decrease_mood_value + minus_mood)
