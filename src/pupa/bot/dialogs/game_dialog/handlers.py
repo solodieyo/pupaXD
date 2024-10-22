@@ -145,11 +145,11 @@ async def _final_game(
 
 		await repository.pupa.inscribe_mood(
 			pupa_id=pupa_id,
-			value=dialog_manager.dialog_data['true_answers'] - (10 - dialog_manager.dialog_data['true_answers'])
+			value=dialog_manager.dialog_data['true_answers']
 		)
 	else:
 		dialog_manager.dialog_data['win'] = False
 		await repository.pupa.decrease_mood_game(
 			pupa_id=pupa_id,
-			value=dialog_manager.dialog_data['true_answers'] - (10 - dialog_manager.dialog_data['true_answers'])
+			value=10 - dialog_manager.dialog_data['true_answers']
 		)
