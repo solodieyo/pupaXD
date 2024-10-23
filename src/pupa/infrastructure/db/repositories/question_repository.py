@@ -121,7 +121,7 @@ class QuestionRepository(BaseRepository):
 					UserQuestions.question_id == question_id,
 					UserQuestions.user_id == user_id,
 				)))
-			if question.interval_date < datetime.now():
+			if question.interval_date < datetime.now().date():
 				return
 			else:
 				await self.session.execute(
