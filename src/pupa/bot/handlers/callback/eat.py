@@ -1,8 +1,7 @@
 
 from aiogram import Router, F
 from aiogram.types import CallbackQuery
-from aiogram_dialog import DialogManager
-
+from aiogram_dialog import DialogManager, ShowMode
 
 router = Router()
 
@@ -12,4 +11,5 @@ async def eat_pupa(
 	callback: CallbackQuery,
 	dialog_manager: DialogManager,
 ):
+	dialog_manager.show_mode = ShowMode.NO_UPDATE
 	await callback.message.delete()
