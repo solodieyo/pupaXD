@@ -84,7 +84,7 @@ class QuestionRepository(BaseRepository):
 				).order_by(func.random())
 				.where(
 					Question.question_type == question_type
-				)
+				).limit(1)
 			)
 			res = question.scalars().all()
 			options = await self.session.execute(
@@ -95,6 +95,7 @@ class QuestionRepository(BaseRepository):
 			return QuestionDTO(
 				*res,
 				options=options.scalars().all(),
+				skip=True
 			)
 
 	async def user_correct_answer_question(
@@ -114,26 +115,16 @@ class QuestionRepository(BaseRepository):
 			)
 			self.session.add(user_question)
 		else:
-			question = await self.session.scalar(select(
-				UserQuestions
-			).where(
-				and_(
-					UserQuestions.question_id == question_id,
-					UserQuestions.user_id == user_id,
-				)))
-			if question.interval_date < datetime.now().date():
-				return
-			else:
-				await self.session.execute(
-					update(UserQuestions)
-					.where(
-						and_(
-							UserQuestions.question_id == Question.id,
-							UserQuestions.user_id == user_id,
-						)
-					).values(
-						count_answers=count_answers,
-						interval_date=datetime.now() + timedelta(days=INTERVALS[count_answers])
+			await self.session.execute(
+				update(UserQuestions)
+				.where(
+					and_(
+						UserQuestions.question_id == Question.id,
+						UserQuestions.user_id == user_id,
 					)
+				).values(
+					count_answers=count_answers,
+					interval_date=datetime.now() + timedelta(days=INTERVALS[count_answers])
 				)
+			)
 		await self.session.commit()

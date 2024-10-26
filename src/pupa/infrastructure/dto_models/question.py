@@ -13,6 +13,7 @@ class QuestionDTO:
 	question: Optional[Question] = None
 	user_question: Optional[UserQuestions] = None
 	options: Optional[Sequence[Row[tuple[str]]]] = None
+	skip: Optional[bool] = False
 
 	def __post_init__(self):
 		if self.options:

@@ -108,17 +108,19 @@ async def on_question_click(
 	dialog_manager.dialog_data['count_answers'] += 1
 	start_time = dialog_manager.dialog_data['start_time']
 
-	if time.time() - start_time > 2:
+	if time.time() - start_time > 11:
 		await callback.answer('Слишком долго(')
 
 	elif selected_item == dialog_manager.dialog_data['answer']:
 		dialog_manager.dialog_data['true_answers'] += 1
-		await repository.questions.user_correct_answer_question(
-			user_id=user.id,
-			question_id=dialog_manager.dialog_data['question_id'],
-			count_answers=dialog_manager.dialog_data.get('count_user_answers', 0),
-			question_type=QuestionType.paints
-		)
+		if not dialog_manager.dialog_data['skip']:
+			dialog_manager.dialog_data['skip'] = False
+			await repository.questions.user_correct_answer_question(
+				user_id=user.id,
+				question_id=dialog_manager.dialog_data['question_id'],
+				count_answers=dialog_manager.dialog_data.get('count_user_answers', 0),
+				question_type=QuestionType.paints
+			)
 		await callback.answer('Верно!')
 	else:
 		await callback.answer('Неверно(')

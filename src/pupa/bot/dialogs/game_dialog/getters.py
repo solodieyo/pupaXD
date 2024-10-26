@@ -1,6 +1,4 @@
 import time
-from random import shuffle
-from sndhdr import tests
 
 from aiogram.enums import ContentType
 from aiogram_dialog import DialogManager
@@ -24,6 +22,7 @@ async def journey_game_getter(
 		user_id=user.id,
 		question_type=dialog_manager.dialog_data['game_type']
 	)
+	dialog_manager.dialog_data['skip'] = question.skip
 	dialog_manager.dialog_data['answer'] = question.question.answer
 	dialog_manager.dialog_data['question_id'] = question.question.id
 	dialog_manager.dialog_data['start_time'] = time.time()

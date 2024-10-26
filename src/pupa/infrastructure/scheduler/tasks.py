@@ -33,20 +33,19 @@ async def decrease_hungry(
 	pupa: Pupa = await repository.pupa.get_pupa_by_pupa_id(pupa_id=pupa_id)
 	if pupa.sleep_state:
 		return
-	if pupa.hungry == 30:
+	if pupa.hungry == 31:
 		await bot.send_message(
 			chat_id=chat_id,
 			text='Пупа хочет кушать!',
 			reply_markup=InlineKeyboardMarkup(
 				inline_keyboard=[
 					[InlineKeyboardButton(
-						text='Хочу кушать',
+						text='Понял, покормлю',
 						callback_data=f'eat_pupa'
 					)]
 				]
 			)
 		)
-		await repository.pupa.decrease_mood_value(pupa_id=pupa_id, mood=pupa.mood)
 	await repository.pupa.decrease_hungry_(pupa_id=pupa_id)
 
 
@@ -115,5 +114,34 @@ async def sleep_pupa(
 					callback_data=f"go_sleep_{pupa_id}"
 				)]
 			]
+		)
+	)
+
+
+@broker.task(task_name='wake_task')
+@inject
+async def wake_pupa(
+	pupa_id: int,
+	message_id: int,
+	chat_id: int,
+	bot: FromDishka[Bot],
+	repository: FromDishka[GeneralRepository],
+):
+	await bot.delete_message(
+		chat_id=chat_id,
+		message_id=message_id
+	)
+
+	await repository.pupa.set_sleep_state(pupa_id=pupa_id, status=False)
+
+	await bot.send_document(
+		chat_id=chat_id,
+		document=FSInputFile('resources/media/gifs/wake.gif'),
+		reply_markup=InlineKeyboardMarkup(
+			inline_keyboard=[
+				[InlineKeyboardButton(
+					text="С добрым утром Пупа",
+					callback_data=f"delete_message"
+				)]]
 		)
 	)
