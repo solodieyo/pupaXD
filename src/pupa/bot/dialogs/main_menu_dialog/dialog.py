@@ -27,7 +27,7 @@ time_window = Window(
 
 main_window = Window(
 	Format(
-		text='🍞{hungry}% | {hungry_state}\n🤗{mood}% | {mood_state}'
+		text='🍔{hungry}% | {hungry_state}\n🤗{mood}% | {mood_state}'
 	),
 	DynamicMedia(
 		selector='main_media'

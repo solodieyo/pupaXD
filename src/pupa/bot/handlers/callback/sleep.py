@@ -2,7 +2,7 @@ from datetime import datetime, timedelta
 
 from aiogram import Router, F, Bot
 from aiogram.types import CallbackQuery, FSInputFile
-from aiogram_dialog import DialogManager
+from aiogram_dialog import DialogManager, ShowMode
 from dishka import FromDishka
 from dishka.integrations.aiogram import inject
 from pytz import timezone
@@ -42,3 +42,12 @@ async def go_sleep(
 		chat_id=callback.from_user.id,
 		message_id=message.message_id
 	)
+
+
+@router.callback_query(F.data == 'delete_message')
+async def delete_message_pupa(
+	callback: CallbackQuery,
+	dialog_manager: DialogManager,
+):
+	dialog_manager.show_mode = ShowMode.NO_UPDATE
+	await callback.message.delete()
