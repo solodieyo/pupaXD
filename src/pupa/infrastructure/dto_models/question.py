@@ -19,3 +19,10 @@ class QuestionDTO:
 		if self.options:
 			self.options = list(self.options) + [self.question.answer]
 			shuffle(self.options)
+
+
+@dataclass
+class ThemeDTO:
+	theme_id: Optional[int] = None
+	theme_name: Optional[str] = None
+	user_progres: Optional[str] = None

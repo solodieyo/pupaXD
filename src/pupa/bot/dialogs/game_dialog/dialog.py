@@ -11,11 +11,11 @@ from pupa.bot.dialogs.common.handlers import ignore
 from pupa.bot.dialogs.game_dialog.getters import (
 	journey_game_getter,
 	getter_question_id,
-	getter_final_menu, get_user_statistics
+	getter_final_menu, getter_themes, getter_theme_select
 )
 from pupa.bot.dialogs.game_dialog.handlers import (
 	on_question_click,
-	os_select_theme
+	os_select_theme, on_select_theme
 )
 from pupa.bot.states.dialog_states import GameStates, MainMenuState
 
@@ -62,16 +62,21 @@ from pupa.bot.states.dialog_states import GameStates, MainMenuState
 # 	getter=get_pupa_status
 # )
 
-# СДЕЛАТЬ ВЫБОР ТЕМЫ ЧЕРЕЗ СЕЛЕКТ GROUP С ЕНУМАМИ
 journey_select_theme = Window(
 	Const('<b>Для начала приключения, выбери интересную тему!</b>'),
 	DynamicMedia(
 		selector='main_media'
 	),
-	Button(
-		text=Format('Картины ({user_count}/{total_count}) {smile}'),
-		id='pictures',
-		on_click=os_select_theme
+	Group(
+		Select(
+			text=Format('{item.theme_name} {item.user_progres}'),
+			id='theme_select',
+			item_id_getter=getter_theme_select,
+			items='themes',
+			on_click=on_select_theme,
+			type_factory=int
+		),
+		width=2
 	),
 	Start(
 		text=Const('Не хочу учиться'),
@@ -85,7 +90,7 @@ journey_select_theme = Window(
 	state=GameStates.pupa_journey_select_theme,
 	getter=(
 		get_main_media,
-		get_user_statistics
+		getter_themes
 	)
 )
 

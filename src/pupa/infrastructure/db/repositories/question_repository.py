@@ -1,7 +1,9 @@
 from datetime import datetime, timedelta
 
-from sqlalchemy import select, func, and_, update
+from aiogram.enums import ContentType
+from sqlalchemy import select, func, and_, update, delete
 
+from pupa.bot.dialogs.admin.dialog import theme_select, questions
 from pupa.bot.enums.question_type import QuestionType
 from pupa.infrastructure.db.models import Question
 from pupa.infrastructure.db.models.user_questions import UserQuestions
@@ -25,21 +27,24 @@ class QuestionRepository(BaseRepository):
 
 	async def add_question(
 		self,
-		file_id: str,
-		true_answer: str,
-		question_type: QuestionType,
+		question: str,
+		media: str,
+		answer: str,
+		theme_id: int,
+		media_content_type: ContentType,
 		options: str = None,
 	):
 		question = Question(
-			media=file_id,
-			answer=true_answer,
+			theme_id=theme_id,
+			media=media,
+			answer=answer,
+			media_content_type=media_content_type,
 			options=options,
-			question_type=question_type
 		)
 		self.session.add(question)
 		await self.session.commit()
 
-	async def get_random_question(self, user_id: int, question_type: QuestionType):
+	async def get_random_question(self, user_id: int, theme_id: int):
 		now_date = datetime.now().date()
 		question = await self.session.execute(
 			select(Question, UserQuestions)
@@ -54,7 +59,7 @@ class QuestionRepository(BaseRepository):
 				and_(
 					(UserQuestions.id == None) |  # Если UserQuestions не существует
 					(now_date >= func.date(UserQuestions.interval_date)),
-					Question.question_type == question_type
+					Question.theme_id == theme_id
 				)
 			)
 			.order_by(func.random())
@@ -83,7 +88,7 @@ class QuestionRepository(BaseRepository):
 					),
 				).order_by(func.random())
 				.where(
-					Question.question_type == question_type
+					Question.theme_id == theme_id
 				).limit(1)
 			)
 			res = question.scalars().all()
@@ -103,7 +108,7 @@ class QuestionRepository(BaseRepository):
 		question_id: int,
 		user_id: int,
 		count_answers: int,
-		question_type: QuestionType = None,
+		theme_id: int,
 	):
 		if count_answers == 0:
 			user_question = UserQuestions(
@@ -111,7 +116,7 @@ class QuestionRepository(BaseRepository):
 				user_id=user_id,
 				count_answers=count_answers,
 				interval_date=datetime.now() + timedelta(days=1),
-				question_type=question_type
+				theme_id=theme_id
 			)
 			self.session.add(user_question)
 		else:
@@ -127,4 +132,59 @@ class QuestionRepository(BaseRepository):
 					interval_date=datetime.now() + timedelta(days=INTERVALS[count_answers])
 				)
 			)
+		await self.session.commit()
+
+	async def get_questions_by_theme(self, theme_id: int):
+		questions = await self.session.execute(
+			select(Question)
+			.where(Question.theme_id == theme_id)
+		)
+		return questions.scalars().all()
+
+	async def get_question(self, question_id: int):
+		question = await self.session.scalar(
+			select(Question).where(Question.id == question_id)
+		)
+		return question
+
+	async def delete_question(self, question_id: int):
+		await self.session.execute(
+			delete(Question).where(Question.id == question_id)
+		)
+		await self.session.commit()
+
+	async def update_question_answer(self, question_id: int, answer: str):
+		await self.session.execute(
+			update(Question).where(Question.id == question_id).values(answer=answer)
+		)
+		await self.session.commit()
+
+	async def update_question_text(self, question_id: int, question: str):
+		await self.session.execute(
+			update(Question).where(Question.id == question_id).values(question=question)
+		)
+		await self.session.commit()
+
+	async def update_question_media_and_text(
+		self, question_id: int,
+		media: str,
+		content_type: str,
+		question: str
+	):
+		await self.session.execute(
+			update(Question).where(Question.id == question_id).values(
+				media=media,
+				media_content_type=content_type,
+				question=question
+			)
+		)
+		await self.session.commit()
+
+	async def update_question_media(self, question_id: int, media: str, content_type: str):
+		await self.session.execute(
+			update(Question).where(Question.id == question_id).values(
+				media=media,
+				media_content_type=content_type
+			)
+		)
 		await self.session.commit()

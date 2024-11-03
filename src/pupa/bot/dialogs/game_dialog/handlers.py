@@ -94,6 +94,16 @@ async def os_select_theme(
 	await dialog_manager.switch_to(GameStates.pupa_journey)
 
 
+async def on_select_theme(
+	_,
+	__,
+	dialog_manager: DialogManager,
+	selected_item: int,
+):
+	dialog_manager.dialog_data['theme_id'] = selected_item
+	await dialog_manager.switch_to(state=GameStates.pupa_journey)
+
+
 @inject
 async def on_question_click(
 	callback: CallbackQuery,
@@ -119,7 +129,7 @@ async def on_question_click(
 				user_id=user.id,
 				question_id=dialog_manager.dialog_data['question_id'],
 				count_answers=dialog_manager.dialog_data.get('count_user_answers', 0),
-				question_type=QuestionType.paints
+				theme_id=dialog_manager.dialog_data['theme_id']
 			)
 		await callback.answer('Верно!')
 	else:
@@ -141,7 +151,6 @@ async def _final_game(
 	pupa_id: int,
 	repository: GeneralRepository,
 ):
-
 	if dialog_manager.dialog_data['true_answers'] > 5:
 		dialog_manager.dialog_data['win'] = True
 

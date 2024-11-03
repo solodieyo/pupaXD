@@ -7,8 +7,9 @@ from dishka import FromDishka
 from dishka.integrations.aiogram_dialog import inject
 
 from pupa.infrastructure.db.models import User
+from pupa.infrastructure.db.models.theme import Theme
 from pupa.infrastructure.db.repositories import GeneralRepository
-from pupa.infrastructure.dto_models.question import QuestionDTO
+from pupa.infrastructure.dto_models.question import QuestionDTO, ThemeDTO
 
 
 @inject
@@ -20,12 +21,16 @@ async def journey_game_getter(
 ):
 	question: QuestionDTO = await repository.questions.get_random_question(
 		user_id=user.id,
-		question_type=dialog_manager.dialog_data['game_type']
+		theme_id=dialog_manager.dialog_data['theme_id']
 	)
-	dialog_manager.dialog_data['skip'] = question.skip
-	dialog_manager.dialog_data['answer'] = question.question.answer
-	dialog_manager.dialog_data['question_id'] = question.question.id
-	dialog_manager.dialog_data['start_time'] = time.time()
+
+	dialog_manager.dialog_data.update(
+		skip=question.skip,
+		answer=question.question.answer,
+		question_id=question.question.id,
+		start_time=time.time()
+	)
+
 	if question.user_question:
 		dialog_manager.dialog_data['count_user_answers'] = question.user_question.count_answers
 	if dialog_manager.dialog_data['has_media']:
@@ -39,6 +44,10 @@ async def journey_game_getter(
 		"game_media": game_media,
 		'question_number': dialog_manager.dialog_data['count_answers'] + 1
 	}
+
+
+def getter_theme_select(theme: ThemeDTO) -> int:
+	return theme.theme_id
 
 
 def getter_question_id(question: str) -> str:
@@ -73,15 +82,38 @@ def get_final_data(
 
 
 @inject
-async def get_user_statistics(
+async def getter_themes(
 	dialog_manager: DialogManager,
 	repository: FromDishka[GeneralRepository],
 	user: User,
 	**_
 ):
-	user_count, total_count = await repository.stats.get_paints_user_stat(user_id=user.id)
+	themes = await repository.theme.get_themes()
 	return {
-		'user_count': user_count,
-		'total_count': total_count,
-		'smile': '' if user_count != total_count else '🏆'
+		'themes': await _themes_to_dto(themes, user, repository),
 	}
+
+
+async def _themes_to_dto(
+	themes: list[Theme | None],
+	user: User,
+	repository: GeneralRepository
+) -> list[ThemeDTO]:
+	new_themes = []
+	for theme in themes:
+		if theme:
+			user_count, total_count = await repository.stats.get_stats_per_theme(
+				user_id=user.id, theme_id=theme.id
+			)
+			if user_count != total_count:
+				user_progres = f'{user_count}/{total_count}'
+			else:
+				user_progres = f'{user_count}/{total_count} 🏆'
+			new_themes.append(
+				ThemeDTO(
+					theme_id=theme.id,
+					theme_name=theme.theme_name,
+					user_progres=user_progres
+				)
+			)
+	return new_themes

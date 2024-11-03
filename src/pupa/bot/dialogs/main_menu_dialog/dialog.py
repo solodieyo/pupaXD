@@ -9,7 +9,7 @@ from aiogram_dialog.widgets.text import Const, Format
 from pupa.bot.dialogs.common.getters import get_pupa_status, get_main_media
 from pupa.bot.dialogs.common.handlers import ignore
 from pupa.bot.dialogs.main_menu_dialog.handlers import on_how_pupa, on_game_start, input_sleep_time, on_wake_up
-from pupa.bot.states.dialog_states import MainMenuState, CareStates
+from pupa.bot.states.dialog_states import MainMenuState, CareStates, SettingsStates
 
 time_window = Window(
 	Const(
@@ -49,6 +49,11 @@ main_window = Window(
 			id='game_start',
 			on_click=on_game_start
 		)
+	),
+	Start(
+		text=Const('⚙️ Настройки'),
+		id='settings_start',
+		state=SettingsStates.main
 	),
 	MessageInput(
 		func=ignore,

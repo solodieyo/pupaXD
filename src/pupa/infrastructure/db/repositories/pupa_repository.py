@@ -183,10 +183,11 @@ class PupaRepository(BaseRepository):
 		)
 		await self.session.commit()
 
-	async def set_sleep_time(self, pupa_id: int, time: str):
+	async def set_sleep_time(self, pupa_id: int, time: str, sleep_schedule_id: str):
 		await self.session.execute(
 			update(Pupa).where(Pupa.id == pupa_id).values(
-				sleep_time=time
+				sleep_time=time,
+				sleep_schedule_id=sleep_schedule_id
 			)
 		)
 		await self.session.commit()

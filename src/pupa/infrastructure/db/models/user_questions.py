@@ -13,6 +13,6 @@ class UserQuestions(Base):
 	id: Mapped[Int16] = mapped_column(primary_key=True, autoincrement=True)
 	question_id: Mapped[Int16] = mapped_column(ForeignKey('questions.id'), nullable=False)
 	user_id: Mapped[Int64] = mapped_column(ForeignKey('users.id'), nullable=False)
+	theme_id: Mapped[Int16] = mapped_column(ForeignKey('themes.id'), nullable=False)
 	count_answers: Mapped[Int16] = mapped_column(nullable=False, default=0)
-	question_type: Mapped[QuestionType] = mapped_column(nullable=False)
 	interval_date: Mapped[datetime] = mapped_column(nullable=True)

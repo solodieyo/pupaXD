@@ -20,5 +20,6 @@ class Pupa(Base):
 	poop_state: Mapped[bool] = mapped_column(nullable=False, default=False)
 	self_education_stat: Mapped[Int64] = mapped_column(nullable=False, default=0)
 	schedule_food_id: Mapped[str] = mapped_column(nullable=True)
+	sleep_schedule_id: Mapped[str] = mapped_column(nullable=True)
 	sleep_time: Mapped[str] = mapped_column(nullable=True)
 	sleep_state: Mapped[bool] = mapped_column(nullable=False, server_default='false')
