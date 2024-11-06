@@ -2,7 +2,7 @@ from datetime import date, timedelta
 
 from sqlalchemy import select, func
 
-from pupa.infrastructure.db.models import UserQuestions, User
+from pupa.infrastructure.db.models import UserQuestions, User, Question
 from pupa.infrastructure.db.models.issue import Issue
 from pupa.infrastructure.db.repositories.base import BaseRepository
 
@@ -47,7 +47,7 @@ class StatisticRepository(BaseRepository):
 			)
 		)
 		total_count = await self.session.scalar(
-			select(func.count(UserQuestions.id))
-			.where(UserQuestions.theme_id == theme_id)
+			select(func.count(Question.id))
+			.where(Question.theme_id == theme_id)
 		)
 		return user_count, total_count

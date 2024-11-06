@@ -96,14 +96,15 @@ journey_select_theme = Window(
 
 journey_game = Window(
 	Format(
-		text='{game_text}'
+		'Вопрос - {question}',
+		when=F['question']
 	),
 	Format(
 		text="Вопрос {question_number} из 10"
 	),
 	DynamicMedia(
 		selector='game_media',
-		when=F['has_media'].is_(True)
+		when=F['game_media']
 	),
 	Group(
 		Select(

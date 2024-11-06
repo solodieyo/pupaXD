@@ -33,14 +33,13 @@ async def journey_game_getter(
 
 	if question.user_question:
 		dialog_manager.dialog_data['count_user_answers'] = question.user_question.count_answers
-	if dialog_manager.dialog_data['has_media']:
+	if question.question.media:
 		game_media = MediaAttachment(type=ContentType.PHOTO, file_id=MediaId(question.question.media))
 	else:
-		game_media = ''
+		game_media = None
 	return {
+		'question': question.question.question,
 		'questions': question.options,
-		'game_text': dialog_manager.dialog_data['game_text'],
-		'has_media': dialog_manager.dialog_data['has_media'],
 		"game_media": game_media,
 		'question_number': dialog_manager.dialog_data['count_answers'] + 1
 	}

@@ -100,7 +100,11 @@ async def on_select_theme(
 	dialog_manager: DialogManager,
 	selected_item: int,
 ):
-	dialog_manager.dialog_data['theme_id'] = selected_item
+	dialog_manager.dialog_data.update(
+		theme_id=selected_item,
+		count_answers=0,
+		true_answers=0
+	)
 	await dialog_manager.switch_to(state=GameStates.pupa_journey)
 
 
