@@ -2,10 +2,9 @@ from datetime import date, timedelta
 
 from sqlalchemy import select, func
 
-from pupa.bot.enums.question_type import QuestionType
-from pupa.infrastructure.db.models import UserQuestions, Question, User
+from pupa.infrastructure.db.models import UserQuestions, User
 from pupa.infrastructure.db.models.issue import Issue
-from pupa.infrastructure.db.repositories import BaseRepository
+from pupa.infrastructure.db.repositories.base import BaseRepository
 
 
 class StatisticRepository(BaseRepository):

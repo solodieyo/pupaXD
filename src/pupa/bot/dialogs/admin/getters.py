@@ -1,10 +1,11 @@
 from aiogram_dialog import DialogManager
+from aiogram_dialog.api.entities import MediaAttachment, MediaId
 from dishka import FromDishka
 from dishka.integrations.aiogram_dialog import inject
 
 from pupa.infrastructure.db.models import Question
 from pupa.infrastructure.db.models.theme import Theme
-from pupa.infrastructure.db.repositories import GeneralRepository
+from pupa.infrastructure.db.repositories.general_repository import GeneralRepository
 
 
 @inject
@@ -53,7 +54,16 @@ async def getter_question(
 		question_id=dialog_manager.dialog_data['question_id']
 	)
 
+	if question.media:
+		media = MediaAttachment(
+			file_id=MediaId(question.media),
+			type=question.media_content_type
+		)
+	else:
+		media = None
+
 	return {
 		'question': question.question,
-		'answer': question.answer
+		'answer': question.answer,
+		'media': media
 	}

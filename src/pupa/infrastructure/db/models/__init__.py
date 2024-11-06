@@ -3,6 +3,8 @@ from .user import User
 from .pupa import Pupa
 from .questions import Question
 from .user_questions import UserQuestions
+from .theme import Theme
+from .issue import Issue
 
 __all__ = [
 	'User',
@@ -12,4 +14,6 @@ __all__ = [
 	'Pupa',
 	'Question',
 	'UserQuestions',
+	'Theme',
+	'Issue',
 ]

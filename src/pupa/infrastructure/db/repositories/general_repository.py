@@ -1,6 +1,6 @@
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from pupa.infrastructure.db.repositories import BaseRepository
+from pupa.infrastructure.db.repositories.base import BaseRepository
 from pupa.infrastructure.db.repositories.pupa_repository import PupaRepository
 from pupa.infrastructure.db.repositories.question_repository import QuestionRepository
 from pupa.infrastructure.db.repositories.statistic_repository import StatisticRepository

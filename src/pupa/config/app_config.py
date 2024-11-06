@@ -11,7 +11,7 @@ CONFIG_PATH = r"config.toml"
 class Tg:
 	token: str
 	admins_id: list[int]
-	idea_channel_id: int
+	idea_channel_id: str
 
 
 @dataclass

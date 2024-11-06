@@ -9,7 +9,7 @@ statistic_main = Window(
 	Const(text='📊 <b>Статистика</b>\n'),
 	Format("👥 Кол-во пользователей <code>{count_users}</code>"),
 	Format('└ Сегодня — +<code>{count_today}</code>'),
-	Format('└ За неделю — +<code>{count_all}</code>'),
+	Format('└ За неделю — +<code>{count_week}</code>'),
 	Format('└ За месяц — +<code>{count_month}</code>'),
 	Start(
 		text=Const('Назад'),

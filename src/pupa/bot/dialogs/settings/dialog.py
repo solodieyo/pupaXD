@@ -1,16 +1,21 @@
 from aiogram import F
 from aiogram.enums import ContentType
-from aiogram_dialog import Window, StartMode, Dialog
+from aiogram_dialog import Window, StartMode, Dialog, ShowMode
 from aiogram_dialog.widgets.input import MessageInput
 from aiogram_dialog.widgets.kbd import SwitchTo, Row, Start
+from aiogram_dialog.widgets.media import StaticMedia
 from aiogram_dialog.widgets.text import Const
 
 from pupa.bot.dialogs.settings.getters import getter_settings
 from pupa.bot.dialogs.settings.handlers import input_sleep_time, input_issue
-from pupa.bot.states.dialog_states import SettingsStates, AdminMenuStates
+from pupa.bot.states.dialog_states import SettingsStates, AdminMenuStates, CareStates
 
 setting_menu = Window(
-	Const('qwe'),
+	Const('Настройки'),
+	StaticMedia(
+		path='resources/media/gifs/settings.gif',
+		type=ContentType.DOCUMENT
+	),
 	Row(
 		SwitchTo(
 			text=Const('🛏 Время Сна'),
@@ -28,6 +33,13 @@ setting_menu = Window(
 		state=AdminMenuStates.main,
 		id='admin_menu',
 		when=F['admin'].is_(True)
+	),
+	Start(
+		text=Const('Назад'),
+		state=CareStates.care_menu,
+		id='back_to_care',
+		show_mode=ShowMode.EDIT,
+		mode=StartMode.RESET_STACK
 	),
 	state=SettingsStates.main,
 	getter=getter_settings

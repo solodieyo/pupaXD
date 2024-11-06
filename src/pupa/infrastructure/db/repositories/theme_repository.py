@@ -1,7 +1,7 @@
 from sqlalchemy import update, select
 
 from pupa.infrastructure.db.models.theme import Theme
-from pupa.infrastructure.db.repositories import BaseRepository
+from pupa.infrastructure.db.repositories.base import BaseRepository
 
 
 class ThemeRepository(BaseRepository):

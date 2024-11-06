@@ -1,11 +1,8 @@
-from datetime import datetime
-
-from anyio.abc import value
 from sqlalchemy import select, update
 
 from pupa.bot.enums import PupaState
 from pupa.infrastructure.db.models.pupa import Pupa
-from pupa.infrastructure.db.repositories import BaseRepository
+from pupa.infrastructure.db.repositories.base import BaseRepository
 
 
 class PupaRepository(BaseRepository):

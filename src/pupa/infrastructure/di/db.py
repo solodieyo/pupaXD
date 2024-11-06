@@ -5,7 +5,7 @@ from sqlalchemy.ext.asyncio import AsyncEngine, async_sessionmaker, AsyncSession
 
 from pupa.config import AppConfig
 from pupa.infrastructure.db.base import create_engine, create_pool
-from pupa.infrastructure.db.repositories import GeneralRepository
+from pupa.infrastructure.db.repositories.general_repository import GeneralRepository
 
 
 class DbProvider(Provider):

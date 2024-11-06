@@ -50,11 +50,6 @@ main_window = Window(
 			on_click=on_game_start
 		)
 	),
-	Start(
-		text=Const('⚙️ Настройки'),
-		id='settings_start',
-		state=SettingsStates.main
-	),
 	MessageInput(
 		func=ignore,
 	),

@@ -1,7 +1,7 @@
 from sqlalchemy import select
 
 from pupa.infrastructure.db.models import User
-from pupa.infrastructure.db.repositories import BaseRepository
+from pupa.infrastructure.db.repositories.base import BaseRepository
 
 
 class UserRepository(BaseRepository):

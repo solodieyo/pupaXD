@@ -1,8 +1,6 @@
 import asyncio
-from datetime import timedelta, datetime
-from importlib.util import source_hash
 
-from aiogram import Router, Bot, F
+from aiogram import Router, Bot
 from aiogram.filters import CommandStart
 from aiogram.types import Message, FSInputFile
 from aiogram_dialog import DialogManager, StartMode, ShowMode
@@ -10,12 +8,9 @@ from dishka import FromDishka
 from dishka.integrations.aiogram import inject
 from taskiq_redis import RedisScheduleSource
 
-from pupa.bot.enums.question_type import QuestionType
 from pupa.bot.states.dialog_states import MainMenuState
-from pupa.config import AppConfig
 from pupa.infrastructure.db.models import Pupa, User
-from pupa.infrastructure.db.repositories import GeneralRepository
-from pupa.infrastructure.dto_models.question import QuestionDTO
+from pupa.infrastructure.db.repositories.general_repository import GeneralRepository
 from pupa.infrastructure.scheduler.tasks import decrease_hungry, decrease_mood
 
 router = Router()

@@ -1,4 +1,4 @@
-from datetime import time, datetime, timedelta
+from datetime import time
 
 from aiogram.types import CallbackQuery, Message
 from aiogram_dialog import DialogManager, ShowMode, StartMode
@@ -11,7 +11,7 @@ from taskiq_redis import RedisScheduleSource
 from pupa.bot.states.dialog_states import MainMenuState, GameStates
 from pupa.bot.utils.parse_user_time import parse_user_time
 from pupa.infrastructure.db.models import Pupa
-from pupa.infrastructure.db.repositories import GeneralRepository
+from pupa.infrastructure.db.repositories.general_repository import GeneralRepository
 from pupa.infrastructure.scheduler.tasks import sleep_pupa
 
 

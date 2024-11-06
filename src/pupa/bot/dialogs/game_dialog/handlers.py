@@ -12,7 +12,7 @@ from pupa.bot.enums import PupaState
 from pupa.bot.enums.question_type import QuestionType
 from pupa.bot.states.dialog_states import GameStates, MainMenuState
 from pupa.infrastructure.db.models import Pupa, User
-from pupa.infrastructure.db.repositories import GeneralRepository
+from pupa.infrastructure.db.repositories.general_repository import GeneralRepository
 from pupa.infrastructure.scheduler.tasks import self_education_task
 
 

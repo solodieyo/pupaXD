@@ -11,7 +11,7 @@ from pupa.bot.dialogs.care_dialog.getters import getter_care_menu
 from pupa.bot.dialogs.care_dialog.handlers import on_start_rest, on_stop_rest, on_eat
 from pupa.bot.dialogs.common.getters import get_pupa_status
 from pupa.bot.dialogs.common.handlers import ignore
-from pupa.bot.states.dialog_states import CareStates, MainMenuState
+from pupa.bot.states.dialog_states import CareStates, MainMenuState, SettingsStates
 
 care_main_menu = Window(
 	Format(
@@ -41,6 +41,11 @@ care_main_menu = Window(
 			on_click=on_start_rest,
 			when=F['food_media'].is_not(True)
 		),
+	),
+	Start(
+		text=Const('⚙️ Настройки'),
+		id='settings_start',
+		state=SettingsStates.main
 	),
 	MessageInput(
 		func=ignore,

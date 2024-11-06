@@ -14,7 +14,7 @@ from taskiq_redis import RedisScheduleSource
 from pupa.bot.enums import PupaState
 from pupa.bot.states.dialog_states import CareStates, MainMenuState
 from pupa.infrastructure.db.models import Pupa
-from pupa.infrastructure.db.repositories import GeneralRepository
+from pupa.infrastructure.db.repositories.general_repository import GeneralRepository
 from pupa.infrastructure.scheduler.tasks import rest_pupa, bad_task
 
 

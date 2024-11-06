@@ -1,9 +1,6 @@
-from asyncio import sleep
-from datetime import timedelta, datetime
-
 from aiogram import Router, F
 from aiogram.types import CallbackQuery
-from aiogram_dialog import DialogManager, StartMode, ShowMode
+from aiogram_dialog import DialogManager, ShowMode
 
 
 router = Router()

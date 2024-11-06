@@ -9,7 +9,7 @@ from dishka.integrations.aiogram_dialog import inject
 
 from pupa.bot.utils.checker_pupa_status import check_food_status, check_mood_status
 from pupa.infrastructure.db.models import Pupa, User
-from pupa.infrastructure.db.repositories import GeneralRepository
+from pupa.infrastructure.db.repositories.general_repository import GeneralRepository
 
 
 @inject

@@ -4,7 +4,7 @@ from dishka import FromDishka
 from dishka.integrations.taskiq import inject
 
 from pupa.infrastructure.db.models import Pupa
-from pupa.infrastructure.db.repositories import GeneralRepository
+from pupa.infrastructure.db.repositories.general_repository import GeneralRepository
 from pupa.infrastructure.scheduler.broker import broker
 
 

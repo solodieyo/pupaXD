@@ -1,7 +1,7 @@
 [tg]
 token = '7685151745:AAEswltJ1CgGVkP3YApSGalNYa2VUZ2ktos'
 admins_id = [5433727201, 1835906223]
-idea_channel_id = 2361685153
+idea_channel_id = "-1002448315613"
 
 [redis]
 host = "127.0.0.1"

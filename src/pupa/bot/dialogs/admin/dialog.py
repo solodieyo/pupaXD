@@ -13,6 +13,7 @@ from aiogram_dialog.widgets.kbd import (
 	PrevPage,
 	NextPage
 )
+from aiogram_dialog.widgets.media import DynamicMedia
 from aiogram_dialog.widgets.text import Const, Format
 
 from pupa.bot.dialogs.admin.getters import (
@@ -33,9 +34,9 @@ from pupa.bot.dialogs.admin.handlers import (
 	on_change_question_media_and_text,
 	on_create_question_text,
 	on_create_question_media,
-	on_create_question_answer
+	on_create_question_answer, on_input_theme_name
 )
-from pupa.bot.states.dialog_states import AdminMenuStates, SettingsStates
+from pupa.bot.states.dialog_states import AdminMenuStates, SettingsStates, StatisticStates
 
 admin_menu = Window(
 	Const('🅰️ Админ меню'),
@@ -43,7 +44,7 @@ admin_menu = Window(
 		Start(
 			text=Const('Статистика'),
 			id='statistics',
-			state=AdminMenuStates.stats
+			state=StatisticStates.main
 		),
 		SwitchTo(
 			text=Const('Темы'),
@@ -87,11 +88,25 @@ theme_select = Window(
 	getter=getter_themes
 )
 
+add_theme = Window(
+	Const('Введите название новой темы'),
+	MessageInput(
+		func=on_input_theme_name,
+		content_types=[ContentType.TEXT]
+	),
+	SwitchTo(
+		text=Const('Назад'),
+		state=AdminMenuStates.themes_select,
+		id='back_to_themes'
+	),
+	state=AdminMenuStates.add_theme
+)
+
 theme_manage = Window(
 	Const('Управление темой'),
 	SwitchTo(
 		text=Const('➕ Добавить новый вопрос'),
-		id='add_theme',
+		id='add_question',
 		state=AdminMenuStates.add_question
 	),
 	SwitchTo(
@@ -140,7 +155,8 @@ questions = Window(
 		),
 		width=2,
 		height=5,
-		id='questions_scroll'
+		id='questions_scroll',
+		hide_pager=True
 	),
 	Row(
 		PrevPage(
@@ -163,6 +179,10 @@ questions = Window(
 
 manage_question = Window(
 	Const('Редактирование вопроса\n'),
+	DynamicMedia(
+		selector='media',
+		when=F['media']
+	),
 	Format(
 		'Вопрос: <b>{question}</b>',
 		when=F['question']
@@ -297,6 +317,7 @@ create_new_question_answer = Window(
 admin_dialog = Dialog(
 	admin_menu,
 	theme_select,
+	add_theme,
 	theme_manage,
 	delete_theme,
 	questions,

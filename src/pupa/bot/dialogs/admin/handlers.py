@@ -1,11 +1,11 @@
 from aiogram.types import CallbackQuery, Message, InlineKeyboardMarkup, InlineKeyboardButton
-from aiogram_dialog import DialogManager
+from aiogram_dialog import DialogManager, ShowMode, StartMode
 from dishka import FromDishka
 from dishka.integrations.aiogram_dialog import inject
 
 from pupa.bot.states.dialog_states import AdminMenuStates
 from pupa.bot.utils.message_misc import FileInfo, get_file_info
-from pupa.infrastructure.db.repositories import GeneralRepository
+from pupa.infrastructure.db.repositories.general_repository import GeneralRepository
 
 
 @inject
@@ -28,7 +28,25 @@ async def on_delete_theme(
 ):
 	await repository.theme.delete_theme(theme_id=dialog_manager.dialog_data['theme_id'])
 	await callback.answer('Тема успешно удалена')
-	await dialog_manager.switch_to(state=AdminMenuStates.manage_theme)
+	await dialog_manager.switch_to(state=AdminMenuStates.themes_select)
+
+
+@inject
+async def on_input_theme_name(
+	message: Message,
+	__,
+	dialog_manager: DialogManager,
+	repository: FromDishka[GeneralRepository],
+):
+	await message.delete()
+	await repository.theme.create_theme(
+		theme_name=message.text
+	)
+
+	await dialog_manager.switch_to(
+		state=AdminMenuStates.themes_select,
+		show_mode=ShowMode.EDIT
+	)
 
 
 async def on_select_question(
@@ -66,7 +84,10 @@ async def on_change_answer(
 		question_id=dialog_manager.dialog_data['question_id'],
 		answer=message.text
 	)
-	await dialog_manager.switch_to(state=AdminMenuStates.manage_question)
+	await dialog_manager.switch_to(
+		state=AdminMenuStates.manage_question,
+		show_mode=ShowMode.EDIT
+	)
 
 
 @inject
@@ -81,7 +102,10 @@ async def on_change_question_text(
 		question_id=dialog_manager.dialog_data['question_id'],
 		question=message.text
 	)
-	await dialog_manager.switch_to(state=AdminMenuStates.manage_question)
+	await dialog_manager.switch_to(
+		state=AdminMenuStates.manage_question,
+		show_mode=ShowMode.EDIT
+	)
 
 
 @inject
@@ -100,7 +124,10 @@ async def on_change_question_media_and_text(
 		media=file_info.file_id,
 		content_type=file_info.content_type
 	)
-	await dialog_manager.switch_to(state=AdminMenuStates.manage_question)
+	await dialog_manager.switch_to(
+		state=AdminMenuStates.manage_question,
+		show_mode=ShowMode.EDIT
+	)
 
 
 async def on_change_question_media(
@@ -117,7 +144,10 @@ async def on_change_question_media(
 		media=file_info.file_id,
 		content_type=file_info.content_type
 	)
-	await dialog_manager.switch_to(state=AdminMenuStates.manage_question)
+	await dialog_manager.switch_to(
+		state=AdminMenuStates.manage_question,
+		show_mode=ShowMode.EDIT
+	)
 
 
 async def on_create_question_text(
@@ -127,7 +157,10 @@ async def on_create_question_text(
 ):
 	await message.delete()
 	dialog_manager.dialog_data['question_text'] = message.text
-	await dialog_manager.switch_to(state=AdminMenuStates.add_question_answer)
+	await dialog_manager.switch_to(
+		state=AdminMenuStates.add_question_answer,
+		show_mode=ShowMode.EDIT
+	)
 
 
 async def on_create_question_media(
@@ -142,7 +175,10 @@ async def on_create_question_media(
 		question_media_type=file_info.content_type,
 		question_text=message.caption
 	)
-	await dialog_manager.switch_to(state=AdminMenuStates.add_question_answer)
+	await dialog_manager.switch_to(
+		state=AdminMenuStates.add_question_answer,
+		show_mode=ShowMode.EDIT
+	)
 
 
 @inject
@@ -155,10 +191,22 @@ async def on_create_question_answer(
 	await message.delete()
 	await repository.questions.add_question(
 		theme_id=dialog_manager.dialog_data['theme_id'],
-		question=dialog_manager.dialog_data['question_text'],
-		media=dialog_manager.dialog_data['question_media'],
-		content_type=dialog_manager.dialog_data['question_media_type'],
+		question=dialog_manager.dialog_data.get('question_text'),
+		media=dialog_manager.dialog_data.get('question_media'),
+		media_content_type=dialog_manager.dialog_data.get('question_media_type'),
 		answer=message.text,
+	)
+
+	dialog_manager.dialog_data.update(
+		question_text=None,
+		question_media=None,
+		question_media_type=None,
+		answer=None
+	)
+
+	await dialog_manager.switch_to(
+		state=AdminMenuStates.manage_theme_questions,
+		show_mode=ShowMode.EDIT,
 	)
 	await message.answer(
 		'Вопрос успешно добавлен',

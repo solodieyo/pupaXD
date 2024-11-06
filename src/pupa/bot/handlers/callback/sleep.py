@@ -9,7 +9,7 @@ from pytz import timezone
 from taskiq_redis import RedisScheduleSource
 
 from pupa.infrastructure.db.models import Pupa
-from pupa.infrastructure.db.repositories import GeneralRepository
+from pupa.infrastructure.db.repositories.general_repository import GeneralRepository
 from pupa.infrastructure.scheduler.tasks import wake_pupa
 
 router = Router()

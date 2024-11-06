@@ -3,11 +3,9 @@ from datetime import datetime, timedelta
 from aiogram.enums import ContentType
 from sqlalchemy import select, func, and_, update, delete
 
-from pupa.bot.dialogs.admin.dialog import theme_select, questions
-from pupa.bot.enums.question_type import QuestionType
 from pupa.infrastructure.db.models import Question
 from pupa.infrastructure.db.models.user_questions import UserQuestions
-from pupa.infrastructure.db.repositories import BaseRepository
+from pupa.infrastructure.db.repositories.base import BaseRepository
 from pupa.infrastructure.dto_models.question import QuestionDTO
 
 INTERVALS = {
@@ -39,7 +37,7 @@ class QuestionRepository(BaseRepository):
 			media=media,
 			answer=answer,
 			media_content_type=media_content_type,
-			options=options,
+			question=question,
 		)
 		self.session.add(question)
 		await self.session.commit()

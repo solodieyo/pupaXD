@@ -1,3 +1,4 @@
+import html
 from datetime import time
 
 from aiogram import Bot
@@ -13,7 +14,7 @@ from pupa.bot.states.dialog_states import SettingsStates
 from pupa.bot.utils.parse_user_time import parse_user_time
 from pupa.config import AppConfig
 from pupa.infrastructure.db.models import Pupa, User
-from pupa.infrastructure.db.repositories import GeneralRepository
+from pupa.infrastructure.db.repositories.general_repository import GeneralRepository
 from pupa.infrastructure.scheduler.tasks import sleep_pupa
 
 
@@ -60,15 +61,18 @@ async def input_issue(
 	config: FromDishka[AppConfig],
 ):
 	user: User = dialog_manager.middleware_data['user']
+	await message.delete()
 	await bot.send_message(
 		chat_id=config.tg.idea_channel_id,
 		text='<b>Новое предложение!</b>\n\n'
-			 f'От пользователя - <a href="t.me/{message.from_user.username}">{message.from_user.full_name}</a>'
-			 f' - <ID[<code>{message.from_user.id}</code>]\n\n'
-			 f'{message.text}'
+			 f'От пользователя - <a href="t.me/{message.from_user.username}">{html.escape(message.from_user.full_name)}</a>'
+			 f' - ID[<code>{message.from_user.id}</code>]\n\n'
+			 f'{message.text}',
+		disable_web_page_preview=True
 	)
 	await repository.stats.create_issue(
 		user_id=user.id,
 		text=message.text
 	)
+	dialog_manager.show_mode = ShowMode.EDIT
 	dialog_manager.dialog_data['sent'] = True

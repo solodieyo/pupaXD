@@ -8,7 +8,7 @@ from dishka.integrations.aiogram_dialog import inject
 
 from pupa.infrastructure.db.models import User
 from pupa.infrastructure.db.models.theme import Theme
-from pupa.infrastructure.db.repositories import GeneralRepository
+from pupa.infrastructure.db.repositories.general_repository import GeneralRepository
 from pupa.infrastructure.dto_models.question import QuestionDTO, ThemeDTO
 
 
