@@ -45,7 +45,8 @@ care_main_menu = Window(
 	Start(
 		text=Const('⚙️ Настройки'),
 		id='settings_start',
-		state=SettingsStates.main
+		state=SettingsStates.main,
+		when=F['food_media'].is_not(True)
 	),
 	MessageInput(
 		func=ignore,
