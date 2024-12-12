@@ -15,7 +15,7 @@ from pupa.bot.states.dialog_states import CareStates, MainMenuState, SettingsSta
 
 care_main_menu = Window(
 	Format(
-		text='🍔{hungry}% | {hungry_state}\n🤗{mood}% | {mood_state}',
+		text='🍔{hungry}% | {hungry_state}\n🤗{mood}% | {mood_state}\n🧠{iq}% | {iq_state}',
 		when=F['food_media'].is_not(True)
 	),
 	DynamicMedia(

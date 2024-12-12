@@ -1,5 +1,3 @@
-from datetime import datetime
-
 from sqlalchemy import ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column
 
@@ -14,6 +12,7 @@ class Pupa(Base):
 	owner_id: Mapped[Int64] = mapped_column(ForeignKey('users.id'), nullable=False)
 	hungry: Mapped[int] = mapped_column(nullable=False, default=65)
 	mood: Mapped[int] = mapped_column(nullable=False, default=71)
+	iq: Mapped[int] = mapped_column(nullable=False, default=0)
 	decrease_food_value: Mapped[int] = mapped_column(nullable=False, default=1)
 	decrease_mood_value: Mapped[int] = mapped_column(nullable=False, default=0)
 	state: Mapped[PupaState] = mapped_column(nullable=False, default=PupaState.nothing)

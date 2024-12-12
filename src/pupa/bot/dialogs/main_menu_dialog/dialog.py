@@ -27,7 +27,7 @@ time_window = Window(
 
 main_window = Window(
 	Format(
-		text='🍔{hungry}% | {hungry_state}\n🤗{mood}% | {mood_state}'
+		text='🍔{hungry}% | {hungry_state}\n🤗{mood}% | {mood_state}\n🧠{iq}% | {iq_state}'
 	),
 	DynamicMedia(
 		selector='main_media'
@@ -45,7 +45,7 @@ main_window = Window(
 			show_mode=ShowMode.EDIT
 		),
 		Button(
-			text=Const('⛳️ Игра'),
+			text=Const('🧠 Игра'),
 			id='game_start',
 			on_click=on_game_start
 		)

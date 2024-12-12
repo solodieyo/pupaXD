@@ -26,3 +26,15 @@ def check_mood_status(mood: int) -> str:
 	for (upper, lower), message in statuses.items():
 		if lower <= mood <= upper:
 			return message
+
+
+def check_iq_status(iq: int) -> str:
+	statuses = {
+		(100, 70): 'Умница Пупа',
+		(75, 20): 'Вот бы поучиться',
+		(20, 0): 'Тупо Пупа'
+	}
+
+	for (upper, lower), message in statuses.items():
+		if lower <= iq <= upper:
+			return message

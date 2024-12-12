@@ -7,7 +7,7 @@ from aiogram_dialog.api.entities import MediaAttachment
 from dishka import FromDishka
 from dishka.integrations.aiogram_dialog import inject
 
-from pupa.bot.utils.checker_pupa_status import check_food_status, check_mood_status
+from pupa.bot.utils.checker_pupa_status import check_food_status, check_mood_status, check_iq_status
 from pupa.infrastructure.db.models import Pupa, User
 from pupa.infrastructure.db.repositories.general_repository import GeneralRepository
 
@@ -24,8 +24,11 @@ async def get_pupa_status(
 	return {
 		'hungry': pupa.hungry,
 		"mood": pupa.mood,
+		"iq": pupa.iq,
+		'iq_state': check_iq_status(pupa.iq),
 		"hungry_state": check_food_status(pupa.hungry),
 		'mood_state': check_mood_status(pupa.mood),
+
 	}
 
 

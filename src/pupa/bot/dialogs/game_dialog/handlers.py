@@ -155,6 +155,11 @@ async def _final_game(
 	pupa_id: int,
 	repository: GeneralRepository,
 ):
+	await repository.pupa.inscribe_iq(
+		pupa_id=pupa_id,
+		value=3 * dialog_manager.dialog_data['true_answers']
+	)
+
 	if dialog_manager.dialog_data['true_answers'] > 5:
 		dialog_manager.dialog_data['win'] = True
 

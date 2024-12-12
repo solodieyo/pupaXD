@@ -196,3 +196,17 @@ class PupaRepository(BaseRepository):
 			)
 		)
 		await self.session.commit()
+
+	async def inscribe_iq(self, pupa_id: int, value: int):
+		pupa: Pupa = await self.get_pupa_by_pupa_id(pupa_id=pupa_id)
+		if (pupa.iq + value) <= 100:
+			await self.session.execute(
+				update(Pupa).where(Pupa.id == pupa_id).values(
+					iq=Pupa.iq + value)
+			)
+		else:
+			await self.session.execute(
+				update(Pupa).where(Pupa.id == pupa_id)
+				.values(iq=100)
+			)
+		await self.session.commit()
