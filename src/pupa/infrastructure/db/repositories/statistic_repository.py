@@ -40,7 +40,7 @@ class StatisticRepository(BaseRepository):
 
 	async def get_stats_per_theme(self, user_id: int, theme_id: int):
 		user_count = await self.session.scalar(
-			select(func.count(UserQuestions.id))
+			select(func.count(func.distinct(UserQuestions.question_id)))
 			.where(
 				UserQuestions.user_id == user_id,
 				UserQuestions.theme_id == theme_id

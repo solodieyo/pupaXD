@@ -37,18 +37,6 @@ async def start_command(
 		)
 		await asyncio.sleep(5)
 		await answer_message.delete()
-		await decrease_hungry.schedule_by_cron(
-			source=redis_source,
-			cron='*/5 * * * *',
-			pupa_id=pupa.id,
-			chat_id=message.from_user.id
-		)
-		await decrease_mood.schedule_by_cron(
-			source=redis_source,
-			cron='*/5 * * * *',
-			pupa_id=pupa.id
-		)
-
 		await dialog_manager.start(
 			state=MainMenuState.time_menu,
 			mode=StartMode.RESET_STACK,

@@ -17,8 +17,8 @@ async def main():
 		query = """
         UPDATE pupa
         SET iq = CASE
-            WHEN iq > 0 THEN iq - 2
-            ELSE iq
+            WHEN iq > 2 THEN iq - 2
+            ELSE 0
         END;
         """
 		await conn.execute(query)

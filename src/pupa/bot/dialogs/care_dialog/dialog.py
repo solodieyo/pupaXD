@@ -22,7 +22,7 @@ care_main_menu = Window(
 		selector='media',
 	),
 	Start(
-		text=Const('😼 Как ты Пупа?'),
+		text=Const('👀 Как ты Пупа?'),
 		id='back_to_main',
 		state=MainMenuState.main_menu,
 		mode=StartMode.RESET_STACK,
