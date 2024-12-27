@@ -68,7 +68,10 @@ class QuestionRepository(BaseRepository):
 		if res:
 			options = await self.session.execute(
 				select(func.distinct(Question.answer))
-				.where(Question.answer != res[0].answer)
+				.where(
+					Question.answer != res[0].answer,
+					Question.theme_id == theme_id
+				)
 				.limit(3)
 			)
 			return QuestionDTO(
@@ -132,7 +135,10 @@ class QuestionRepository(BaseRepository):
 			)
 		await self.session.commit()
 
-	async def get_questions_by_theme(self, theme_id: int):
+	async def get_questions_by_theme(
+		self,
+		theme_id: int,
+	):
 		questions = await self.session.execute(
 			select(Question)
 			.where(Question.theme_id == theme_id)
@@ -186,3 +192,9 @@ class QuestionRepository(BaseRepository):
 			)
 		)
 		await self.session.commit()
+
+	async def get_count_questions(self, theme_id: int):
+		count = await self.session.scalar(
+			select(func.count(Question.id)).where(Question.theme_id == theme_id)
+		)
+		return count

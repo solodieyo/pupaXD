@@ -88,7 +88,7 @@ async def on_eat(
 		await redis_source.delete_schedule(pupa.schedule_food_id)
 	schedule_bad: CreatedSchedule = await bad_task.schedule_by_time(
 		source=redis_source,
-		time=datetime.now(tz=timezone('Europe/Moscow')) + timedelta(minutes=10),
+		time=datetime.now(tz=timezone('Europe/Moscow')) + timedelta(minutes=30),
 		pupa_id=pupa.id,
 		chat_id=dialog_manager.event.from_user.id
 	)

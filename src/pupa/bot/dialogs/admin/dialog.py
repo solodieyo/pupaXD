@@ -11,7 +11,7 @@ from aiogram_dialog.widgets.kbd import (
 	Button,
 	ScrollingGroup,
 	PrevPage,
-	NextPage
+	NextPage, CurrentPage
 )
 from aiogram_dialog.widgets.media import DynamicMedia
 from aiogram_dialog.widgets.text import Const, Format
@@ -36,6 +36,7 @@ from pupa.bot.dialogs.admin.handlers import (
 	on_create_question_media,
 	on_create_question_answer, on_input_theme_name
 )
+from pupa.bot.filters.len_answer_filter import LengthFilter
 from pupa.bot.states.dialog_states import AdminMenuStates, SettingsStates, StatisticStates
 
 admin_menu = Window(
@@ -161,11 +162,11 @@ questions = Window(
 	Row(
 		PrevPage(
 			scroll="questions_scroll", text=Format("👈 Предыдущие"),
-			when=F["pages"] > 1 & F["current_page1"] != 1
+			# when=F["pages"] > 1 & F["current_page1"] != 0
 		),
 		NextPage(
 			scroll="questions_scroll", text=Format("👉 Следующие"),
-			when=F["current_page1"] != F["pages"] & F["pages"] > 1
+			# when=F["current_page1"] != F["pages"]
 		),
 	),
 	SwitchTo(
@@ -304,7 +305,8 @@ create_new_question_answer = Window(
 	Const('Введите ответ на вопрос'),
 	MessageInput(
 		func=on_create_question_answer,
-		content_types=[ContentType.TEXT]
+		content_types=[ContentType.TEXT],
+		filter=LengthFilter()
 	),
 	SwitchTo(
 		text=Const('Отмена'),

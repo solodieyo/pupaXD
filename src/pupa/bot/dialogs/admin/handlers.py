@@ -15,6 +15,7 @@ async def on_select_theme(
 	dialog_manager: DialogManager,
 	selected_item: int,
 ):
+	dialog_manager.find('questions_scroll').set_page(page=0)
 	dialog_manager.dialog_data['theme_id'] = selected_item
 	await dialog_manager.switch_to(state=AdminMenuStates.manage_theme)
 

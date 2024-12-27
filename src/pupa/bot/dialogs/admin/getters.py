@@ -1,3 +1,6 @@
+from math import ceil
+
+from aiogram import Bot
 from aiogram_dialog import DialogManager
 from aiogram_dialog.api.entities import MediaAttachment, MediaId
 from dishka import FromDishka
@@ -29,14 +32,16 @@ def themes_item_id_getter(theme: Theme) -> int:
 async def getter_questions(
 	dialog_manager: DialogManager,
 	repository: FromDishka[GeneralRepository],
+	bot: Bot,
 	**_,
 ):
+	count_pages = await repository.questions.get_count_questions(theme_id=dialog_manager.dialog_data['theme_id'])
 	questions = await repository.questions.get_questions_by_theme(
-		theme_id=dialog_manager.dialog_data['theme_id']
+		theme_id=dialog_manager.dialog_data['theme_id'],
 	)
 
 	return {
-		'questions': questions
+		'questions': questions,
 	}
 
 
