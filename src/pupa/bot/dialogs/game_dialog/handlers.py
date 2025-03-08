@@ -122,7 +122,7 @@ async def on_question_click(
 	dialog_manager.dialog_data['count_answers'] += 1
 	start_time = dialog_manager.dialog_data['start_time']
 
-	if time.time() - start_time > 11:
+	if time.time() - start_time > 30:
 		await callback.answer('Слишком долго(')
 
 	elif selected_item == dialog_manager.dialog_data['answer']:

@@ -32,11 +32,22 @@ async def get_pupa_status(
 	}
 
 
+@inject
 async def get_main_media(
 	dialog_manager: DialogManager,
+	repository: FromDishka[GeneralRepository],
 	**_
 ):
-	if dialog_manager.dialog_data.get('no_mood', False):
+	pupa: Pupa = await repository.pupa.get_or_create_pupa(owner_id=user.id)
+
+	if 0 <= pupa.iq <= 20:
+		media = MediaAttachment(
+			type=ContentType.DOCUMENT,
+			path=Path(
+				f'resources/media/gifs/dumb_pupa.gif'
+			)
+		)
+	elif dialog_manager.dialog_data.get('no_mood', False):
 		media = MediaAttachment(
 			type=ContentType.DOCUMENT,
 			path=Path(
