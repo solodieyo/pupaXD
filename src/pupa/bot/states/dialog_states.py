@@ -43,6 +43,7 @@ class AdminMenuStates(StatesGroup):
 	add_question = State()
 	add_question_answer = State()
 	change_media = State()
+	mailing = State()
 
 
 class StatisticStates(StatesGroup):

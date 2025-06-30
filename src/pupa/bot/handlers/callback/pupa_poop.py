@@ -1,4 +1,5 @@
 from aiogram import Router, F
+from aiogram.exceptions import TelegramBadRequest
 from aiogram.types import CallbackQuery
 from aiogram_dialog import DialogManager, ShowMode
 from dishka import FromDishka
@@ -19,4 +20,7 @@ async def remove_poop(
 	pupa_id = int(callback.data.split('_')[2])
 	await repository.pupa.set_poop_state(pupa_id=pupa_id, status=False)
 	dialog_manager.show_mode = ShowMode.NO_UPDATE
-	await callback.message.delete()
+	try:
+		await callback.message.delete()
+	except TelegramBadRequest:
+		return

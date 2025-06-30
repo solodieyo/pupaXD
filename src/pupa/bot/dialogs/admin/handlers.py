@@ -1,11 +1,20 @@
+import asyncio
+from asyncio import sleep
+
+from aiogram import Bot
+from aiogram.exceptions import TelegramForbiddenError, TelegramBadRequest
 from aiogram.types import CallbackQuery, Message, InlineKeyboardMarkup, InlineKeyboardButton
 from aiogram_dialog import DialogManager, ShowMode, StartMode
+from aiogram_dialog.manager.message_manager import SEND_METHODS
 from dishka import FromDishka
 from dishka.integrations.aiogram_dialog import inject
 
 from pupa.bot.states.dialog_states import AdminMenuStates
 from pupa.bot.utils.message_misc import FileInfo, get_file_info
+from pupa.infrastructure.db.models import User
 from pupa.infrastructure.db.repositories.general_repository import GeneralRepository
+
+TASKS = set()
 
 
 @inject
@@ -74,6 +83,7 @@ async def on_delete_question(
 	await dialog_manager.switch_to(state=AdminMenuStates.manage_theme_questions)
 
 
+@inject
 async def on_change_answer(
 	message: Message,
 	__,
@@ -131,6 +141,7 @@ async def on_change_question_media_and_text(
 	)
 
 
+@inject
 async def on_change_question_media(
 	message: Message,
 	__,
@@ -219,3 +230,92 @@ async def on_create_question_answer(
 				)]]
 		)
 	)
+
+
+@inject
+async def on_mailing(
+	message: Message,
+	__,
+	dialog_manager: DialogManager,
+	repo: FromDishka[GeneralRepository],
+	bot: FromDishka[Bot],
+):
+	users = await repo.user.get_users()
+	task = asyncio.create_task(
+		_mailing(
+			users=users,
+			bot=bot,
+			message=message)
+	)
+	TASKS.add(task)
+	await message.answer('Рассылка началась')
+	await dialog_manager.start(
+		state=AdminMenuStates.mailing,
+		show_mode=ShowMode.EDIT,
+		mode=StartMode.RESET_STACK
+	)
+
+
+async def _mailing(
+	users: list[User],
+	bot: Bot,
+	message: Message
+):
+	if message.text:
+		await _send_text(
+			bot=bot,
+			text=message.text,
+			users=users
+		)
+	else:
+		await _send_media(
+			bot=bot,
+			message=message,
+			file_id=get_file_id(message),
+			users=users
+		)
+
+
+def get_file_id(message: Message):
+	if message.photo:
+		return message.photo[-1].file_id
+	elif message.document:
+		return message.document.file_id
+
+
+async def _send_text(
+	bot: Bot,
+	text: str,
+	users: list[User],
+):
+	for user in users:
+		try:
+			await bot.send_message(
+				chat_id=user.tg_user_id,
+				text=text,
+			)
+		except (TelegramForbiddenError, TelegramBadRequest):
+			continue
+
+
+async def _send_media(
+	bot: Bot,
+	message: Message,
+	file_id: str,
+	users: list[User],
+):
+	method = getattr(bot, SEND_METHODS[message.content_type], None)
+	if not method:
+		raise ValueError(
+			f"ContentType {message.content_type} is not supported",
+		)
+	for user in users:
+		try:
+			await method(
+				chat_id=user.tg_user_id,
+				media=file_id,
+				caption=message.caption,
+			)
+			await sleep(1)
+		except (TelegramForbiddenError, TelegramBadRequest):
+			continue

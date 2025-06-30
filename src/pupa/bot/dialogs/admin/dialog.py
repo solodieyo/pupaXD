@@ -34,7 +34,7 @@ from pupa.bot.dialogs.admin.handlers import (
 	on_change_question_media_and_text,
 	on_create_question_text,
 	on_create_question_media,
-	on_create_question_answer, on_input_theme_name
+	on_create_question_answer, on_input_theme_name, on_mailing
 )
 from pupa.bot.filters.len_answer_filter import LengthFilter
 from pupa.bot.states.dialog_states import AdminMenuStates, SettingsStates, StatisticStates
@@ -52,6 +52,11 @@ admin_menu = Window(
 			id='themes',
 			state=AdminMenuStates.themes_select
 		),
+		SwitchTo(
+			text=Const('Рассылка'),
+			id='mailing',
+			state=AdminMenuStates.mailing
+		)
 	),
 	Start(
 		text=Const('Назад'),
@@ -316,6 +321,20 @@ create_new_question_answer = Window(
 	state=AdminMenuStates.add_question_answer
 )
 
+mailing = Window(
+	Const('Отправьте фото\гиф или просто текст'),
+	MessageInput(
+		func=on_mailing,
+		content_types=[ContentType.PHOTO, ContentType.DOCUMENT, ContentType.TEXT]
+	),
+	SwitchTo(
+		text=Const('Назад'),
+		state=AdminMenuStates.main,
+		id='back_to_main'
+	),
+	state=AdminMenuStates.mailing
+)
+
 admin_dialog = Dialog(
 	admin_menu,
 	theme_select,
@@ -329,5 +348,6 @@ admin_dialog = Dialog(
 	change_question,
 	change_media,
 	create_new_question,
-	create_new_question_answer
+	create_new_question_answer,
+	mailing
 )

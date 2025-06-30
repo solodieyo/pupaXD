@@ -26,3 +26,7 @@ class UserRepository(BaseRepository):
 			await self.session.commit()
 
 		return user, new_user
+
+	async def get_users(self):
+		result = await self.session.scalars(select(User))
+		return result.all()
